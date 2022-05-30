@@ -1,3 +1,4 @@
+import sys
 import time
 from RPi import GPIO
 from helpers.klasseknop import Button
@@ -5,7 +6,7 @@ import threading
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from repositories.DataRepository import DataRepository
 
 from selenium import webdriver
@@ -14,27 +15,41 @@ from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
 
-ledPin = 21
-btnPin = Button(20)
+GPIO.setmode(GPIO.BCM)
+
+
+trans = 20
+GPIO.setup(trans, GPIO.OUT)
+pwm_trans = GPIO.PWM(trans, 50)
+pwm_trans.start(0)
+
+temp = {}
+
+# ledPin = 21
+# btnPin = Button(20)
 
 # Code voor Hardware
-def setup_gpio():
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
+    #temp sensor
 
-    GPIO.setup(ledPin, GPIO.OUT)
-    GPIO.output(ledPin, GPIO.LOW)
+
+
+# def setup_gpio():
+#     GPIO.setwarnings(False)
+#     GPIO.setmode(GPIO.BCM)
+
+#     GPIO.setup(ledPin, GPIO.OUT)
+#     GPIO.output(ledPin, GPIO.LOW)
     
-    btnPin.on_press(lees_knop)
+#     btnPin.on_press(lees_knop)
 
 
-def lees_knop(pin):
-    if btnPin.pressed:
-        print("**** button pressed ****")
-        if GPIO.input(ledPin) == 1:
-            switch_light({'lamp_id': '3', 'new_status': 0})
-        else:
-            switch_light({'lamp_id': '3', 'new_status': 1})
+# def lees_knop(pin):
+#     if btnPin.pressed:
+#         print("**** button pressed ****")
+#         if GPIO.input(ledPin) == 1:
+#             switch_light({'lamp_id': '3', 'new_status': 0})
+#         else:
+#             switch_light({'lamp_id': '3', 'new_status': 1})
 
 
 
@@ -56,11 +71,20 @@ def error_handler(e):
 
 
 # API ENDPOINTS
-
+endpoint = "/api/v1"
 
 @app.route('/')
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+
+@app.route(endpoint + '/temp', methods=['GET'])
+def get_temp():
+    if request.method == 'GET':
+        data = DataRepository.read_latest_temp_data()
+        if data is not None:
+            return jsonify(data=data), 200
+        else:
+            return jsonify(data="ERROR"), 404
 
 
 @socketio.on('connect')
@@ -68,45 +92,49 @@ def initial_connection():
     print('A new client connect')
     # # Send to the client!
     # vraag de status op van de lampen uit de DB
-    status = DataRepository.read_status_lampen()
-    emit('B2F_status_lampen', {'lampen': status}, broadcast=True)
 
 
-@socketio.on('F2B_switch_light')
-def switch_light(data):
-    # Ophalen van de data
-    lamp_id = data['lamp_id']
-    new_status = data['new_status']
-    print(f"Lamp {lamp_id} wordt geswitcht naar {new_status}")
+# @socketio.on('F2B_switch_light')
+# def switch_light(data):
+#     # Ophalen van de data
+#     lamp_id = data['lamp_id']
+#     new_status = data['new_status']
+#     print(f"Lamp {lamp_id} wordt geswitcht naar {new_status}")
 
-    # Stel de status in op de DB
-    res = DataRepository.update_status_lamp(lamp_id, new_status)
+    # # Stel de status in op de DB
+    # res = DataRepository.update_status_lamp(lamp_id, new_status)
 
-    # Vraag de (nieuwe) status op van de lamp en stuur deze naar de frontend.
-    data = DataRepository.read_status_lamp_by_id(lamp_id)
-    socketio.emit('B2F_verandering_lamp', {'lamp': data}, broadcast=True)
+    # # Vraag de (nieuwe) status op van de lamp en stuur deze naar de frontend.
+    # data = DataRepository.read_status_lamp_by_id(lamp_id)
+    # socketio.emit('B2F_verandering_lamp', {'lamp': data}, broadcast=True)
 
-    # Indien het om de lamp van de TV kamer gaat, dan moeten we ook de hardware aansturen.
-    if lamp_id == '3':
-        print(f"TV kamer moet switchen naar {new_status} !")
-        GPIO.output(ledPin, new_status)
+    # # Indien het om de lamp van de TV kamer gaat, dan moeten we ook de hardware aansturen.
+    # if lamp_id == '3':
+    #     print(f"TV kamer moet switchen naar {new_status} !")
+    #     GPIO.output(ledPin, new_status)
 
 
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
-def all_out():
+
+def read_temp():
     while True:
-        print('*** We zetten alles uit **')
-        DataRepository.update_status_alle_lampen(0)
-        GPIO.output(ledPin, 0)
-        status = DataRepository.read_status_lampen()
-        socketio.emit('B2F_status_lampen', {'lampen': status})
-        time.sleep(15)
+        global temp
+        file = open('/sys/bus/w1/devices/28-0620198ec89f/w1_slave')
+        text = file.read()
+        file.close()
+        secondline = text.split("\n")[1]
+        temperatuurdata = secondline.split(" ")[9]
+        temperatuur = float(temperatuurdata[2:])
+        temp = round(temperatuur / 1000, 2)
+        answer=DataRepository.insert_temp(temp)      
+        socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
+        print("De temp is: =", temp, "graden Celcius.")
 
 def start_thread():
     print("**** Starting THREAD ****")
-    thread = threading.Thread(target=all_out, args=(), daemon=True)
+    thread = threading.Thread(target=read_temp, args=(), daemon=True)
     thread.start()
 
 
@@ -151,11 +179,11 @@ def start_chrome_thread():
 
 if __name__ == '__main__':
     try:
-        setup_gpio()
+        # setup_gpio()
+        start_chrome_thread()   
         start_thread()
-        start_chrome_thread()
         print("**** Starting APP ****")
-        socketio.run(app, debug=False, host='0.0.0.0')
+        socketio.run(app, port=5000, debug=False, host='0.0.0.0')   
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
     finally:

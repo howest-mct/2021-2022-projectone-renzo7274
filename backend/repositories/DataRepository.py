@@ -11,24 +11,15 @@ class DataRepository:
         return gegevens
 
     @staticmethod
-    def read_status_lampen():
-        sql = "SELECT * from lampen"
-        return Database.get_rows(sql)
+    def read_latest_temp_data():
+        sql = "SELECT waarde FROM database_test.historiek where DeviceID = 2 order by Actiedatum DESC limit 1"
+        return Database.get_one_row(sql)
 
     @staticmethod
-    def read_status_lamp_by_id(id):
-        sql = "SELECT * from lampen WHERE id = %s"
-        params = [id]
-        return Database.get_one_row(sql, params)
+    def insert_temp(temp):
+        sql = "insert into historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'graden celcius',2,1)"
+        params=[temp]
+        return Database.execute_sql(sql,params)
 
-    @staticmethod
-    def update_status_lamp(id, status):
-        sql = "UPDATE lampen SET status = %s WHERE id = %s"
-        params = [status, id]
-        return Database.execute_sql(sql, params)
+    
 
-    @staticmethod
-    def update_status_alle_lampen(status):
-        sql = "UPDATE lampen SET status = %s"
-        params = [status]
-        return Database.execute_sql(sql, params)
