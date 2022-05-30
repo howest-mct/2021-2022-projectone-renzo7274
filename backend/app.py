@@ -6,7 +6,7 @@ import threading
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from repositories.DataRepository import DataRepository
 
 from selenium import webdriver
@@ -31,22 +31,7 @@ temp = {}
 # Code voor Hardware
     #temp sensor
 
-try:
-    while True:
-        file = open('/sys/bus/w1/devices/28-22d540000900/w1_slave')
-        text = file.read()
-        file.close()
-        secondline = text.split("\n")[1]
-        temperatuurdata = secondline.split(" ")[9]
-        temperatuur = float(temperatuurdata[2:])
-        temp = round(temperatuur / 1000, 2)
-        print("De temp is: =", temp, "graden Celcius.")
-        huidige_temp()
 
-except KeyboardInterrupt:
-    pwm_trans.stop()
-finally:
-    GPIO.cleanup()
 
 # def setup_gpio():
 #     GPIO.setwarnings(False)
@@ -86,11 +71,20 @@ def error_handler(e):
 
 
 # API ENDPOINTS
-
+endpoint = "/api/v1"
 
 @app.route('/')
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+
+@app.route(endpoint + '/temp', methods=['GET'])
+def get_temp():
+    if request.method == 'GET':
+        data = DataRepository.read_latest_temp_data()
+        if data is not None:
+            return jsonify(data=data), 200
+        else:
+            return jsonify(data="ERROR"), 404
 
 
 @socketio.on('connect')
@@ -98,8 +92,6 @@ def initial_connection():
     print('A new client connect')
     # # Send to the client!
     # vraag de status op van de lampen uit de DB
-    status = DataRepository.read_status_lampen()
-    emit('B2F_status_lampen', {'lampen': status}, broadcast=True)
 
 
 # @socketio.on('F2B_switch_light')
@@ -126,9 +118,23 @@ def initial_connection():
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
+def read_temp():
+    while True:
+        global temp
+        file = open('/sys/bus/w1/devices/28-0620198ec89f/w1_slave')
+        text = file.read()
+        file.close()
+        secondline = text.split("\n")[1]
+        temperatuurdata = secondline.split(" ")[9]
+        temperatuur = float(temperatuurdata[2:])
+        temp = round(temperatuur / 1000, 2)
+        answer=DataRepository.insert_temp(temp)      
+        socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
+        print("De temp is: =", temp, "graden Celcius.")
+
 def start_thread():
     print("**** Starting THREAD ****")
-    thread = threading.Thread(target=all_out, args=(), daemon=True)
+    thread = threading.Thread(target=read_temp, args=(), daemon=True)
     thread.start()
 
 
@@ -173,11 +179,11 @@ def start_chrome_thread():
 
 if __name__ == '__main__':
     try:
-        #setup_gpio()
+        # setup_gpio()
+        start_chrome_thread()   
         start_thread()
-        start_chrome_thread()
         print("**** Starting APP ****")
-        socketio.run(app, debug=False, host='0.0.0.0')
+        socketio.run(app, port=5000, debug=False, host='0.0.0.0')   
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
     finally:
