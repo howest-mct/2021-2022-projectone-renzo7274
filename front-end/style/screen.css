@@ -40,7 +40,7 @@ html {
  */
 
 ::selection {
-  background: #3385FF;
+  background: #1271BB;
   color: white;
   text-shadow: none;
 }
@@ -145,7 +145,7 @@ hr {
 }
 
 a {
-  color: #3385FF;
+  color: #1271BB;
   transition: all .1s ease-in-out;
 }
 
@@ -156,7 +156,7 @@ a:active {
 
 a:hover,
 a:focus {
-  color: #4F95FF;
+  color: #1271BB;
 }
 
 /*------------------------------------*\
