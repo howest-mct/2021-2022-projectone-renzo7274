@@ -3,23 +3,6 @@
   #FONTS
 \*------------------------------------*/
 
-@font-face {
-  font-family: "Inter Web";
-  font-weight: 400;
-  src: url("../fonts/Inter-Regular.woff2") format("woff2")
-}
-
-@font-face {
-  font-family: "Inter Web";
-  font-weight: 600;
-  src: url("../fonts/Inter-Medium.woff2") format("woff2")
-}
-
-@font-face {
-  font-family: "Inter Web";
-  font-weight: 700;
-  src: url("../fonts/Inter-Bold.woff2") format("woff2")
-}
 
 /*------------------------------------*\
   #GENERIC
@@ -34,7 +17,7 @@
 html {
   font-size: 16px;
   line-height: 1.5;
-  font-family: "Inter Web", Helvetica, arial, sans-serif;
+  font-family: "montserrat";
   color: #FFFFFF;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -695,15 +678,24 @@ a:focus {
   font-weight: 600;
 }
 
-/*------------------------------------*\
-  #UTILITIES
-\*------------------------------------*/
+.c-select {
+  font-family: monteserrat;
+  font-weight: 600;
+  background-color: #1271BB;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 16px;
+  width: 200px;
+  border-radius: 8px;
+  border-color: #1271BB;
+  padding-top: 2.5px; 
+  padding-bottom: 3.5px;
+  margin-top: 8px;
+}
 
-/*
-    Utilities: color
-    ---
-    Utility classes to put specific colors onto elements
-*/
+.c-select:hover {
+  background-color: #0063B3;
+}
 
 .u-color-neutral-base {
   color: #9C9EB8;
