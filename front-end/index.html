@@ -24,5 +24,26 @@
       decibel
     </h3>
   </div>
+  <div>
+    <h4>
+      <input type="checkbox" name="auto_control" value="auto" id="auto_control" />
+      <label for="auto_control">automatic control</label>
+    </h4>
+    
+    <h4>
+      manual control <br>
+      <input type="range" name="level" min="0" max="10" step="1" class="js-scrollbar" />
+    </h4>
+    <h4>
+      noise gate <br>
+      <select name="level" id="spel" class="js-spel form-control">
+        <option value="loud">loud: 70 dB</option>
+        <option value="normal">normal: 60 dB</option>
+        <option value="quiet">quiet: 50 dB</option>
+        <option value="off">off</option>
+      </select>
+    </h4>
+    
+  </div>
 </body>
 </html>
