@@ -66,12 +66,6 @@ img {
     Default markup for typographic elements
 */
 
-h1,
-h2,
-h3 {
-  font-weight: 700;
-}
-
 h1 {
   font-size: 36px;
   line-height: 48px;
@@ -79,23 +73,28 @@ h1 {
 }
 
 h2 {
-  font-size: 32px;
-  line-height: 40px;
-  margin: 0 0 24px;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 49px;
+  margin: 0 0 8px;
 }
 
 h3 {
-  font-size: 26px;
-  line-height: 32px;
-  margin: 0 0 24px;
+  font-size: 20px;
+  font-weight: 700;
+  opacity: 0.7;
+  line-height: 24px;
+  margin: 0 0 0;
 }
 
 h4,
 h5,
 h6 {
-  font-size: 20px;
-  line-height: 24px;
-  margin: 0 0 24px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  margin: 32px 0 24px;
+  text-align: center;
 }
 
 p,
@@ -171,7 +170,7 @@ a:focus {
 
 .o-row {
   position: relative;
-  padding: 24px 24px 0;
+  padding: 64px 16px 0;
   display: flow-root;
 }
 
@@ -195,8 +194,9 @@ a:focus {
 /* size modifiers */
 
 .o-row--lg {
-  padding-top: 48px;
-  padding-bottom: 24px;
+  position: relative;
+  padding: 32px 40px 0;
+  display: flow-root;
 }
 
 .o-row--intro {
@@ -205,38 +205,12 @@ a:focus {
 }
 
 .o-row--xl {
-  padding-top: 72px;
-  padding-bottom: 48px;
+  position: relative;
+  padding: -8px 0 0;
+  display: flow-root;
 }
 
-@media (min-width: 768px) {
-  .o-row {
-    padding-left: 48px;
-    padding-right: 48px;
-  }
 
-  .o-row--md {
-    padding-top: 48px;
-    padding-bottom: 24px;
-  }
-
-  .o-row--lg {
-    padding-top: 72px;
-    padding-bottom: 48px;
-  }
-}
-
-@media (min-width: 992px) {
-  .o-row--intro {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .o-row--xl {
-    padding-top: 96px;
-    padding-bottom: 72px;
-  }
-}
 
 /*
     Objects: Container
@@ -248,7 +222,7 @@ a:focus {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  max-width: 79.5em;
+  max-width: 360px;
   /* 90 * 16px = 1440px */
 }
 
@@ -616,36 +590,13 @@ a:focus {
 */
 
 .c-link-cta {
-  display: inline-block;
-  text-decoration: none;
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 600;
-  padding: 8px 20px;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px #2E77E6;
-  background: #3385FF linear-gradient(to bottom, #4F95FF, #2E77E6);
-}
-
-.c-link-cta,
-.c-link-cta:visited,
-.c-link-cta:active {
-  color: #fff;
-}
-
-.c-link-cta:hover,
-.c-link-cta:focus {
-  color: #fff;
-  background: #4F95FF;
-}
-
-.c-link-cta:active {
-  background-color: #3385FF;
-}
-
-.c-link-cta--lg {
-  font-size: 16px;
-  padding: 16px 32px;
+ 
+  padding: 24px;
+  padding-bottom: 34px;
+  border-radius: 30px;
+  background: #44494C ;
+  border-color: #44494C;
+  text-align: center;
 }
 
 /*
@@ -685,7 +636,7 @@ a:focus {
   color: #FFFFFF;
   text-align: center;
   font-size: 16px;
-  width: 200px;
+  width: 248px;
   border-radius: 8px;
   border-color: #1271BB;
   padding-top: 2.5px; 
@@ -702,13 +653,14 @@ input[type="range"] {
   appearance: none;
   background: transparent;
   cursor: pointer;
-  width: 15rem;
+  width: 248px;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
   background: #44494C;
   height: 0.5rem;
   border-radius: 8px;
+  margin-top: 8px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -731,21 +683,23 @@ input[type="range"]:focus::-webkit-slider-thumb {
   outline-offset: 0.125rem;
 }
 
-.container {
+.c-container {
   display: block;
   position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  margin: 16px 0 24px;
+  margin-left: 16px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-
+  max-width: 248px;
 }
 
-.container input {
+.c-container input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -753,23 +707,26 @@ input[type="range"]:focus::-webkit-slider-thumb {
   width: 0;
 }
 
-.checkmark {
+.c-checkmark {
   position: absolute;
   top: 0;
   left: 0;
   height: 25px;
   width: 25px;
+  margin-top: -3px;
+  margin-left: 16px;
   background-color: #44494C;
   border-radius: 16px;
 }
 
-.container:hover input~.checkmark {
+.c-container:hover input~.c-checkmark {
   background-color: #B0B0B2;
 }
 
-.container input:checked~.checkmark {
+.c-container input:checked~.c-checkmark {
   background-color: #1271BB;
 }
+
 
 /*
     Utilities: spacing

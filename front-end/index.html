@@ -16,35 +16,38 @@
 </head>
 
 <body>
-  <div>
-    <h2 class="js-temp">
-      temp
-    </h2>
-    <h3 class="js-decibel">
-      decibel
-    </h3>
-  </div>
-  <div>
-    <h4>
-      <label class="container"for="auto_control">automatic control
-      <input type="checkbox" name="auto_control" value="auto" id="auto_control" />
-      <span class="checkmark"></span>
-      </label>
-    </h4>
-    
-    <h4>
-      manual control <br>
-      <input type="range" name="scrollbar" min="0" max="10" step="1" class="js-scrollbar" />
-    </h4>
-    <h4>
-      noise gate <br>
-          <select name="level" id="noise gate" class="js-level c-select">
-            <option class="c-select" value="off">off</option>
-            <option class="c-select" value="quiet">quiet: 50 dB</option>
-            <option class="c-select" value="normal">normal: 60 dB</option>
-            <option class="c-select" value="loud">loud: 70 dB</option>
-          </select>
-    </h4>
-  </div>
+  <section class="o-row o-container">
+    <div class="c-link-cta o-container">
+      <h2 class="js-temp">
+        temp
+      </h2>
+      <h3 class="js-decibel">
+        decibel
+      </h3>
+    </div>
+  </section>
+  <section class="o-row--xl">
+    <div class=" o-container o-row--lg">
+        <h4>
+          <label class="c-container "for="auto_control">automatic control
+            <input type="checkbox" name="auto_control" value="auto" id="auto_control" />
+            <span class="c-checkmark"></span>
+          </label>
+        </h4>
+      <h4>
+        manual control <br>
+        <input type="range" name="scrollbar" min="0" max="10" step="1" class="js-scrollbar" />
+      </h4>
+      <h4>
+        noise gate <br>
+            <select name="level" id="noise gate" class="js-level c-select">
+              <option class="c-select" value="off">off</option>
+              <option class="c-select" value="quiet">quiet: 50 dB</option>
+              <option class="c-select" value="normal">normal: 60 dB</option>
+              <option class="c-select" value="loud">loud: 70 dB</option>
+            </select>
+      </h4>
+    </div>
+  </section>
 </body>
 </html>
