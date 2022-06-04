@@ -17,7 +17,7 @@
 html {
   font-size: 16px;
   line-height: 1.5;
-  font-family: "montserrat";
+  font-family: "montserrat", sans-serif;
   color: #FFFFFF;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -679,7 +679,7 @@ a:focus {
 }
 
 .c-select {
-  font-family: monteserrat;
+  font-family: monteserrat, sans-serif;
   font-weight: 600;
   background-color: #1271BB;
   color: #FFFFFF;
@@ -697,12 +697,78 @@ a:focus {
   background-color: #0063B3;
 }
 
-.u-color-neutral-base {
-  color: #9C9EB8;
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
 }
 
-.u-color-neutral-dark {
-  color: #83859E;
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #44494C;
+  height: 0.5rem;
+  border-radius: 8px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  background-color: #1271BB;
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 16px;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  border: 1px solid #0063B3;
+  outline: 3px solid #0063B3;
+  outline-offset: 0.125rem;
+}
+
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+}
+
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #44494C;
+  border-radius: 16px;
+}
+
+.container:hover input~.checkmark {
+  background-color: #B0B0B2;
+}
+
+.container input:checked~.checkmark {
+  background-color: #1271BB;
 }
 
 /*
@@ -710,6 +776,14 @@ a:focus {
     ---
     Utility classes to put specific margins and paddings onto elements
 */
+
+.u-color-neutral-base {
+  color: #9C9EB8;
+}
+
+.u-color-neutral-dark {
+  color: #83859E;
+}
 
 .u-pt-clear {
   padding-top: 0 !important;

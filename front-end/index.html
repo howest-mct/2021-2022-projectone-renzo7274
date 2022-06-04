@@ -26,21 +26,23 @@
   </div>
   <div>
     <h4>
+      <label class="container"for="auto_control">automatic control
       <input type="checkbox" name="auto_control" value="auto" id="auto_control" />
-      <label for="auto_control">automatic control</label>
+      <span class="checkmark"></span>
+      </label>
     </h4>
     
     <h4>
       manual control <br>
-      <input type="range" name="level" min="0" max="10" step="1" class="js-scrollbar" />
+      <input type="range" name="scrollbar" min="0" max="10" step="1" class="js-scrollbar" />
     </h4>
     <h4>
       noise gate <br>
           <select name="level" id="noise gate" class="js-level c-select">
-            <option class="c-option" value="off">off</option>
-            <option class="c-option" value="loud">loud: 70 dB</option>
-            <option class="c-option" value="normal">normal: 60 dB</option>
-            <option class="c-option" value="quiet">quiet: 50 dB</option>
+            <option class="c-select" value="off">off</option>
+            <option class="c-select" value="quiet">quiet: 50 dB</option>
+            <option class="c-select" value="normal">normal: 60 dB</option>
+            <option class="c-select" value="loud">loud: 70 dB</option>
           </select>
     </h4>
   </div>
