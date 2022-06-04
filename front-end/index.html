@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>hoofd pagina</title>
+  <link rel="stylesheet" href="https://use.typekit.net/tdw8pdf.css">
   <link rel="stylesheet" href="style/screen.css" />
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"
     integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU"
@@ -15,11 +16,38 @@
 </head>
 
 <body>
-  <div>
-    <h2 class="js-temp">
-      test
-    </h2>
-  </div>
+  <section class="o-row o-container">
+    <div class="c-link-cta o-container">
+      <h2 class="js-temp">
+        temp
+      </h2>
+      <h3 class="js-decibel">
+        decibel
+      </h3>
+    </div>
+  </section>
+  <section class="o-row--xl">
+    <div class=" o-container o-row--lg">
+        <h4>
+          <label class="c-container "for="auto_control">automatic control
+            <input type="checkbox" name="auto_control" value="auto" id="auto_control" />
+            <span class="c-checkmark"></span>
+          </label>
+        </h4>
+      <h4>
+        manual control <br>
+        <input type="range" name="scrollbar" min="0" max="10" step="1" class="js-scrollbar" />
+      </h4>
+      <h4>
+        noise gate <br>
+            <select name="level" id="noise gate" class="js-level c-select">
+              <option value="off">off</option>
+              <option value="quiet">quiet: 50 dB</option>
+              <option value="normal">normal: 60 dB</option>
+              <option value="loud">loud: 70 dB</option>
+            </select>
+      </h4>
+    </div>
+  </section>
 </body>
-
 </html>

@@ -1,298 +1,258 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;900&display=swap');
-@-webkit-keyframes move-left {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-  100% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-}
+/*------------------------------------*\
+  #GENERIC
+\*------------------------------------*/
 
-@keyframes move-left {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-  100% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-}
-@-webkit-keyframes move-right {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-  100% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-}
-@keyframes move-right {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-  100% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-}
-@-webkit-keyframes width-to-zero {
-  0% {
-    width: 50px;
-  }
-  100% {
-    width: 11px;
-  }
-}
-@keyframes width-to-zero {
-  0% {
-    width: 50px;
-  }
-  100% {
-    width: 11px;
-  }
-}
-@-webkit-keyframes move-up {
-  100% {
-    bottom: 100.75px;
-  }
-}
-@keyframes move-up {
-  100% {
-    bottom: 100.75px;
-  }
-}
-@-webkit-keyframes move-down {
-  100% {
-    top: 100.75px;
-  }
-}
-@keyframes move-down {
-  100% {
-    top: 100.75px;
-  }
-}
+/*
+    Generic: Page
+    ---
+    Global page styles + universal box-sizing:
+*/
 
-body,
 html {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: "montserrat", sans-serif;
+  color: #FFFFFF;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  background-color: #1A1A1A;
 }
 
-body {
-  background: #aecad8;
-  transition: all 0.14s ease-in;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
-/* body.u-active {
-  background: #f3f7f9;
-} */
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * Customize the background color to match your design.
+ */
+
+::selection {
+  background: #1271BB;
+  color: white;
+  text-shadow: none;
+}
+
+/*------------------------------------*\
+  #Elements
+\*------------------------------------*/
+
+/*
+    Elements: typography
+    ---
+    Default markup for typographic elements
+*/
+
+h1 {
+  font-size: 36px;
+  line-height: 48px;
+  margin: 0 0 24px;
+}
+
+h2 {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 49px;
+  margin: 0 0 8px;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 700;
+  opacity: 0.7;
+  line-height: 24px;
+  margin: 0 0 0;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  margin: 32px 0 24px;
+  text-align: center;
+}
+
+/*------------------------------------*\
+  #OBJECTS
+\*------------------------------------*/
+
+/*
+    Objects: Row
+    ---
+    Creates a horizontal row that stretches the viewport and adds padding around children
+*/
+
+.o-row {
+  position: relative;
+  padding: 64px 16px 0;
+  display: flow-root;
+}
+
+/* size modifiers */
+
+.o-row--lg {
+  position: relative;
+  padding: 32px 40px 0;
+  display: flow-root;
+}
+
+.o-row--xl {
+  position: relative;
+  padding: -8px 0 0;
+  display: flow-root;
+}
+
+
+
+/*
+    Objects: Container
+    ---
+    Creates a horizontal container that sets de global max-width
+*/
 
 .o-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 360px;
+  /* 90 * 16px = 1440px */
 }
 
-.c-power-btn {
-  margin: auto;
-  /* margin-top: 20px; */
-  background: #38434a;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  font-family: Roboto;
-  font-weight: 800;
-  font-size: 1.9em;
-  height: 65px;
-  letter-spacing: 0.2px;
-  line-height: 65px;
+/*
+    Component: CTA link
+    ---
+    Small cta link with custom animation
+*/
+
+.c-link-cta {
+ 
+  padding: 24px;
+  padding-bottom: 34px;
+  border-radius: 30px;
+  background: #44494C ;
+  border-color: #44494C;
   text-align: center;
+}
+
+/*
+    Component: select
+    ---
+    Component to customize select input
+*/
+
+.c-select {
+  font-family: monteserrat, sans-serif;
+  font-weight: 600;
+  background-color: #1271BB;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 16px;
+  width: 248px;
+  border-radius: 8px;
+  border-color: #1271BB;
+  padding-top: 2.5px; 
+  padding-bottom: 3.5px;
+  margin-top: 8px;
+}
+
+.c-select:hover {
+  background-color: #0063B3;
+}
+
+/*
+    Component: range
+    ---
+    Component to customise range input
+*/
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 248px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #44494C;
+  height: 0.5rem;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  background-color: #1271BB;
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 16px;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  border: 1px solid #0063B3;
+  outline: 3px solid #0063B3;
+  outline-offset: 0.125rem;
+}
+
+/*
+    Component: checkbox
+    ---
+    Component to customize checkbox input
+*/
+.c-container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  margin: 16px 0 24px;
+  margin-left: 16px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  width: 150px;
-  transition: none;
-}
-.c-power-btn:hover {
-  background: #414e56;
-}
-.c-power-btn:active {
-  box-shadow: inset 0px 4px 10px 0px #2d363b;
-  transition: background 0.14s ease-in;
+  max-width: 248px;
 }
 
-/* opmaak van de bulb */
-.c-fancy-bulb {
-  position: relative;
-}
-.c-fancy-bulb__streaks,
-.c-fancy-bulb__streaks:after,
-.c-fancy-bulb__streaks:before {
+.c-container input {
   position: absolute;
-  background: #ffdb55;
-  border-radius: 5.5px;
-  height: 11px;
-  z-index: 5000;
-}
-
-.c-fancy-bulb__streaks:after,
-.c-fancy-bulb__streaks:before {
-  content: '';
-  display: block;
-}
-
-.c-fancy-bulb__streaks:before {
-  bottom: 65px;
-}
-
-.c-fancy-bulb__streaks:after {
-  top: 65px;
-}
-
-.c-fancy-bulb__streaks--left {
-  right: 217px;
-  top: 89.5px;
-}
-.c-fancy-bulb__streaks--left:before,
-.c-fancy-bulb__streaks--left:after {
-  left: 15px;
-}
-
-.c-fancy-bulb__streaks--right {
-  left: 217px;
-  top: 89.5px;
-}
-
-.c-fancy-bulb__streaks--right:before,
-.c-fancy-bulb__streaks--right:after {
-  right: 15px;
-}
-
-.c-fancy-bulb__streaks--left:before,
-.c-fancy-bulb__streaks--righ:after {
-  -webkit-transform: rotate(34deg);
-  transform: rotate(34deg);
-}
-
-.c-fancy-bulb__streaks--left:after,
-.c-fancy-bulb__streaks--righ:before {
-  -webkit-transform: rotate(-34deg);
-  transform: rotate(-34deg);
-}
-
-.c-fancy-bulb__light {
-  -webkit-transform: translate(50%, 50%) scale(0);
-  transform: translate(50%, 50%) scale(0);
   opacity: 0;
-  fill: #ffdb55;
+  cursor: pointer;
+  height: 0;
+  width: 0;
 }
 
-.c-room {
-  display: flex;
-  flex-direction: column;
-  background: #a3bcc9;
-  padding: 1em;
-  margin: 0 0.5em;
-}
-.c-room__name {
-  font-family: Roboto;
-  font-size: 1.25em;
-  font-weight: 100;
-  text-align: center;
-  margin-bottom: 12px;
-  color: #38434a;
-}
-.c-room__icon {
-  margin-bottom: 20px;
-}
-.c-room__control {
+.c-checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  margin-top: -3px;
+  margin-left: 16px;
+  background-color: #44494C;
+  border-radius: 16px;
 }
 
-.c-room--wait .c-fancy-bulb__light {
-  opacity: 1;
-  -webkit-transform: translate(0) scale(1);
-  transform: translate(0) scale(1);
-  transition: all 0.14s ease-in;
-  fill: rgb(248, 238, 203);
+.c-container:hover input~.c-checkmark {
+  background-color: #B0B0B2;
 }
 
-.c-room--on .c-fancy-bulb__light {
-  opacity: 1;
-  -webkit-transform: translate(0) scale(1);
-  transform: translate(0) scale(1);
-  transition: all 0.14s ease-in;
-  fill: #ffdb55;
-}
-
-.c-room--on .c-fancy-bulb__streaks--left {
-  -webkit-animation: move-left 0.38s ease-out, width-to-zero 0.38s ease-out;
-  animation: move-left 0.38s ease-out, width-to-zero 0.38s ease-out;
-  -webkit-animation-delay: 0.14s;
-  animation-delay: 0.14s;
-}
-
-.c-room--on .c-fancy-bulb__streaks--left:before {
-  -webkit-animation: width-to-zero 0.38s ease-out, move-up 0.38s ease-out;
-  animation: width-to-zero 0.38s ease-out, move-up 0.38s ease-out;
-  -webkit-animation-delay: 0.14s;
-  animation-delay: 0.14s;
-}
-.c-room--on .c-fancy-bulb__streaks--left:after {
-  -webkit-animation: width-to-zero 0.38s ease-out, move-down 0.38s ease-out;
-  animation: width-to-zero 0.38s ease-out, move-down 0.38s ease-out;
-  -webkit-animation-delay: 0.14s;
-  animation-delay: 0.14s;
-}
-
-.c-room--on .c-fancy-bulb__streaks--right {
-  -webkit-animation: move-right 0.38s ease-out, width-to-zero 0.38s ease-out;
-  animation: move-right 0.38s ease-out, width-to-zero 0.38s ease-out;
-  -webkit-animation-delay: 0.14s;
-  animation-delay: 0.14s;
-}
-
-.c-room--on .c-fancy-bulb__streaks--right:before {
-  -webkit-animation: width-to-zero 0.38s ease-out, move-up 0.38s ease-out;
-  animation: width-to-zero 0.38s ease-out, move-up 0.38s ease-out;
-  -webkit-animation-delay: 0.14s;
-  animation-delay: 0.14s;
-}
-.c-room--on .c-fancy-bulb__streaks--right:after {
-  -webkit-animation: width-to-zero 0.38s ease-out, move-down 0.38s ease-out;
-  animation: width-to-zero 0.38s ease-out, move-down 0.38s ease-out;
-  -webkit-animation-delay: 0.14s;
-  animation-delay: 0.14s;
-}
-
-.c-room--on .c-power-btn {
-  background: #58c48d;
-}
-.c-room--on .c-power-btn:active {
-  box-shadow: inset 0px 6px 8px -1px #41b77b;
+.c-container input:checked~.c-checkmark {
+  background-color: #1271BB;
 }
