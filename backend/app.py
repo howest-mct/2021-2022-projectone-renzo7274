@@ -117,6 +117,55 @@ finally:
     print('Program stopped...')
 
 
+#######     rotary encoder code    #######
+
+global counter
+counter = 0
+clkLastState = 0
+switchState = 0
+
+clk_pin = 21
+dt_pin = 20
+sw_pin = 16
+
+def setup():
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(clk_pin, GPIO.IN, GPIO.PUD_UP)
+  GPIO.setup(dt_pin, GPIO.IN, GPIO.PUD_UP)
+  GPIO.setup(sw_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+  GPIO.add_event_detect(clk_pin, GPIO.FALLING, callback=rotation_decode, bouncetime=200)
+
+def rotation_decode(pin):
+    global counter
+    global clkLastState
+    clockState = GPIO.input(16)
+    if clockState != clkLastState:
+        if GPIO.input(dt_pin) == 0:
+            counter -= 1
+            if counter < 0:
+                counter = 0
+            print('Rolling to the LEFT')
+            print(counter)
+        else:
+            counter += 1
+            if counter > 10:
+                counter = 10
+            print("Rolling to the RIGHT")
+            print(counter)
+        clockState=clkLastState 
+
+setup()
+
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt as e:
+    print(e)
+finally:
+    print("Program stopped...")
+
+
 #######     btn code    #######
 
 # ledPin = 21
@@ -143,6 +192,8 @@ finally:
 #             switch_light({'lamp_id': '3', 'new_status': 1})
 
 
+
+
 #######     Flask code    #######
 
 app = Flask(__name__)
@@ -155,6 +206,9 @@ CORS(app)
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
     print(e)
+
+
+
 
 #######     API ENDPOINTS    #######
 endpoint = "/api/v1"
@@ -179,6 +233,8 @@ def initial_connection():
     # vraag de status op van de lampen uit de DB
 
 
+
+
 #######     threads    #######
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
@@ -193,6 +249,8 @@ def start_thread():
     print("**** Starting THREAD ****")
     thread = threading.Thread(target=write_message, args=(), daemon=True)
     thread.start()
+
+
 
 
 #######     chrome kiosk    #######
@@ -229,6 +287,8 @@ def start_chrome_thread():
     print("**** Starting CHROME ****")
     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
     chromeThread.start()
+
+
 
 
 #######     ANDERE FUNCTIES    #######
