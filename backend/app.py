@@ -18,105 +18,14 @@ from selenium import webdriver
 GPIO.setmode(GPIO.BCM)
 
 
+#######     temp code    #######
+
 trans = 20
 GPIO.setup(trans, GPIO.OUT)
 pwm_trans = GPIO.PWM(trans, 50)
 pwm_trans.start(0)
 
 temp = {}
-
-# ledPin = 21
-# btnPin = Button(20)
-
-# Code voor Hardware
-    #temp sensor
-
-
-
-# def setup_gpio():
-#     GPIO.setwarnings(False)
-#     GPIO.setmode(GPIO.BCM)
-
-#     GPIO.setup(ledPin, GPIO.OUT)
-#     GPIO.output(ledPin, GPIO.LOW)
-    
-#     btnPin.on_press(lees_knop)
-
-
-# def lees_knop(pin):
-#     if btnPin.pressed:
-#         print("**** button pressed ****")
-#         if GPIO.input(ledPin) == 1:
-#             switch_light({'lamp_id': '3', 'new_status': 0})
-#         else:
-#             switch_light({'lamp_id': '3', 'new_status': 1})
-
-
-
-
-# Code voor Flask
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'geheim!'
-socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
-                    engineio_logger=False, ping_timeout=1)
-
-CORS(app)
-
-
-@socketio.on_error()        # Handles the default namespace
-def error_handler(e):
-    print(e)
-
-
-
-# API ENDPOINTS
-endpoint = "/api/v1"
-
-@app.route('/')
-def hallo():
-    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
-
-@app.route(endpoint + '/temp', methods=['GET'])
-def get_temp():
-    if request.method == 'GET':
-        data = DataRepository.read_latest_temp_data()
-        if data is not None:
-            return jsonify(data=data), 200
-        else:
-            return jsonify(data="ERROR"), 404
-
-
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
-    # # Send to the client!
-    # vraag de status op van de lampen uit de DB
-
-
-# @socketio.on('F2B_switch_light')
-# def switch_light(data):
-#     # Ophalen van de data
-#     lamp_id = data['lamp_id']
-#     new_status = data['new_status']
-#     print(f"Lamp {lamp_id} wordt geswitcht naar {new_status}")
-
-    # # Stel de status in op de DB
-    # res = DataRepository.update_status_lamp(lamp_id, new_status)
-
-    # # Vraag de (nieuwe) status op van de lamp en stuur deze naar de frontend.
-    # data = DataRepository.read_status_lamp_by_id(lamp_id)
-    # socketio.emit('B2F_verandering_lamp', {'lamp': data}, broadcast=True)
-
-    # # Indien het om de lamp van de TV kamer gaat, dan moeten we ook de hardware aansturen.
-    # if lamp_id == '3':
-    #     print(f"TV kamer moet switchen naar {new_status} !")
-    #     GPIO.output(ledPin, new_status)
-
-
-
-# START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-# werk enkel met de packages gevent en gevent-websocket.
 
 def read_temp():
     while True:
@@ -132,11 +41,161 @@ def read_temp():
         socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
         print("De temp is: =", temp, "graden Celcius.")
 
+
+#######     lcd code    #######
+
+e_pin = 20
+rs_pin = 21
+
+GPIO.setmode(GPIO.BCM)
+
+# lijst_pinnen
+lijst_pinnen = [16, 12, 25, 24, 23, 26, 19, 13]
+
+def setup():
+    GPIO.setup(e_pin, GPIO.OUT)
+    GPIO.setup(rs_pin, GPIO.OUT)
+    for i in range(8):
+        GPIO.setup(lijst_pinnen[i], GPIO.OUT)
+    GPIO.output(e_pin, GPIO.HIGH)
+
+# RS laag, set_data_bits, E laag, E hoog
+def send_instruction(value):
+    GPIO.output(rs_pin, GPIO.LOW)
+    set_data_bits(value)
+    GPIO.output(e_pin, GPIO.LOW)
+    GPIO.output(e_pin, GPIO.HIGH)
+    time.sleep(0.01)
+
+# RS hoog, set_data_bits, E laag, E hoog
+def send_character(value):
+    value = ord(value)
+    GPIO.output(rs_pin, GPIO.HIGH)
+    GPIO.output(e_pin, GPIO.HIGH)
+    set_data_bits(value)
+    GPIO.output(e_pin, GPIO.LOW)
+    GPIO.output(e_pin, GPIO.HIGH)
+    time.sleep(0.01)
+
+# value = byte, loop trough bits (mask) and set data pins
+def set_data_bits(value):
+    check_value = 0b1
+    for i in range(8):
+        te_verzenden_value = value & check_value
+        if te_verzenden_value > 0:
+            GPIO.output(lijst_pinnen[i], GPIO.HIGH)
+        else:
+            GPIO.output(lijst_pinnen[i], GPIO.LOW)
+        check_value = check_value << 1
+
+# function set, display on, clear display en cursor home
+def write_message(message):
+    send_instruction(0b00000001)
+    count = 0
+    for i in message:
+        count += 1
+        send_character(i)
+        if count == 16:
+            send_instruction(0b10000000 | 0x40)
+
+def init_LCD():
+    send_instruction(0b00111000)  # function set of 0x38
+    send_instruction(0b00001111)  # display on of 0xf
+    send_instruction(0b00000001)  # clear display/cursor home of 0x01
+
+setup()
+init_LCD()
+try:
+    while True:
+        tekst = ("192.168.168.169")
+        write_message(tekst)
+        time.sleep(10)
+except KeyboardInterrupt as KI:
+    print(KI)
+finally:
+    GPIO.cleanup()
+    print('Program stopped...')
+
+
+#######     btn code    #######
+
+# ledPin = 21
+# btnPin = Button(20)
+
+# Code voor Hardware
+    #temp sensor
+
+# def setup_gpio():
+#     GPIO.setwarnings(False)
+#     GPIO.setmode(GPIO.BCM)
+
+#     GPIO.setup(ledPin, GPIO.OUT)
+#     GPIO.output(ledPin, GPIO.LOW)
+    
+#     btnPin.on_press(lees_knop)
+
+# def lees_knop(pin):
+#     if btnPin.pressed:
+#         print("**** button pressed ****")
+#         if GPIO.input(ledPin) == 1:
+#             switch_light({'lamp_id': '3', 'new_status': 0})
+#         else:
+#             switch_light({'lamp_id': '3', 'new_status': 1})
+
+
+#######     Flask code    #######
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'geheim!'
+socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
+                    engineio_logger=False, ping_timeout=1)
+
+CORS(app)
+
+@socketio.on_error()        # Handles the default namespace
+def error_handler(e):
+    print(e)
+
+#######     API ENDPOINTS    #######
+endpoint = "/api/v1"
+
+@app.route('/')
+def hallo():
+    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+
+@app.route(endpoint + '/temp', methods=['GET'])
+def get_temp():
+    if request.method == 'GET':
+        data = DataRepository.read_latest_temp_data()
+        if data is not None:
+            return jsonify(data=data), 200
+        else:
+            return jsonify(data="ERROR"), 404
+
+@socketio.on('connect')
+def initial_connection():
+    print('A new client connect')
+    # # Send to the client!
+    # vraag de status op van de lampen uit de DB
+
+
+#######     threads    #######
+
+# START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
+# werk enkel met de packages gevent en gevent-websocket.
+
 def start_thread():
     print("**** Starting THREAD ****")
     thread = threading.Thread(target=read_temp, args=(), daemon=True)
     thread.start()
 
+def start_thread():
+    print("**** Starting THREAD ****")
+    thread = threading.Thread(target=write_message, args=(), daemon=True)
+    thread.start()
+
+
+#######     chrome kiosk    #######
 
 def start_chrome_kiosk():
     import os
@@ -166,16 +225,13 @@ def start_chrome_kiosk():
     while True:
         pass
 
-
 def start_chrome_thread():
     print("**** Starting CHROME ****")
     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
     chromeThread.start()
 
 
-
-# ANDERE FUNCTIES
-
+#######     ANDERE FUNCTIES    #######
 
 if __name__ == '__main__':
     try:
@@ -188,4 +244,3 @@ if __name__ == '__main__':
         print ('KeyboardInterrupt exception is caught')
     finally:
         GPIO.cleanup()
-
