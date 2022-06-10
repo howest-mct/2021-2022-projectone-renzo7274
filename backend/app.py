@@ -244,11 +244,13 @@ def start_thread():
     print("**** Starting THREAD ****")
     thread = threading.Thread(target=read_temp, args=(), daemon=True)
     thread.start()
+    time.sleep(5)
 
 def start_thread():
     print("**** Starting THREAD ****")
     thread = threading.Thread(target=write_message, args=(), daemon=True)
     thread.start()
+    time.sleep(100)
 
 
 
