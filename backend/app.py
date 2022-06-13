@@ -18,7 +18,7 @@ from selenium import webdriver
 GPIO.setmode(GPIO.BCM)
 
 
-#######     temp code    #######
+#######     temp lezen code    #######
 
 trans = 20
 GPIO.setup(trans, GPIO.OUT)
@@ -124,9 +124,9 @@ counter = 0
 clkLastState = 0
 switchState = 0
 
-clk_pin = 21
-dt_pin = 20
-sw_pin = 16
+clk_pin = 18
+dt_pin = 17
+sw_pin = 27
 
 def setup():
   GPIO.setmode(GPIO.BCM)
@@ -139,7 +139,7 @@ def setup():
 def rotation_decode(pin):
     global counter
     global clkLastState
-    clockState = GPIO.input(16)
+    clockState = GPIO.input(27)
     if clockState != clkLastState:
         if GPIO.input(dt_pin) == 0:
             counter -= 1
@@ -159,7 +159,7 @@ setup()
 
 try:
     while True:
-        time.sleep(1)
+        time.sleep(0.1)
 except KeyboardInterrupt as e:
     print(e)
 finally:
@@ -250,7 +250,13 @@ def start_thread():
     print("**** Starting THREAD ****")
     thread = threading.Thread(target=write_message, args=(), daemon=True)
     thread.start()
-    time.sleep(100)
+    time.sleep(10)
+
+def start_thread():
+    print("**** Starting THREAD ****")
+    thread = threading.Thread(target=rotation_decode, args=(), daemon=True)
+    thread.start()
+    time.sleep(0.5)
 
 
 
