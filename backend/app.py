@@ -250,55 +250,34 @@ finally:
 
 #######     powerbtn code    #######
 
-# ledPin = 21
-# btnPin = Button(20)
+btnPin = Button(22)
 
-# Code voor Hardware
-    #temp sensor
+def setup_gpio():
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    btnPin.on_press(lees_knop)
 
-# def setup_gpio():
-#     GPIO.setwarnings(False)
-#     GPIO.setmode(GPIO.BCM)
-
-#     GPIO.setup(ledPin, GPIO.OUT)
-#     GPIO.output(ledPin, GPIO.LOW)
-    
-#     btnPin.on_press(lees_knop)
-
-# def lees_knop(pin):
-#     if btnPin.pressed:
-#         print("**** button pressed ****")
-#         if GPIO.input(ledPin) == 1:
-#             switch_light({'lamp_id': '3', 'new_status': 0})
-#         else:
-#             switch_light({'lamp_id': '3', 'new_status': 1})
+def lees_knop(pin):
+    print("**** button pressed ****")
+setup_gpio()
+while True:
+    time.sleep(0)
 
 
 #######     modebtn code    #######
 
-# ledPin = 21
-# btnPin = Button(20)
+btnPin = Button(27)
 
-# Code voor Hardware
-    #temp sensor
+def setup_gpio():
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    btnPin.on_press(lees_knop)
 
-# def setup_gpio():
-#     GPIO.setwarnings(False)
-#     GPIO.setmode(GPIO.BCM)
-
-#     GPIO.setup(ledPin, GPIO.OUT)
-#     GPIO.output(ledPin, GPIO.LOW)
-    
-#     btnPin.on_press(lees_knop)
-
-# def lees_knop(pin):
-#     if btnPin.pressed:
-#         print("**** button pressed ****")
-#         if GPIO.input(ledPin) == 1:
-#             switch_light({'lamp_id': '3', 'new_status': 0})
-#         else:
-#             switch_light({'lamp_id': '3', 'new_status': 1})
-
+def lees_knop(pin):
+    print("**** button pressed ****")
+setup_gpio()
+while True:
+    time.sleep(0)
 
 
 
