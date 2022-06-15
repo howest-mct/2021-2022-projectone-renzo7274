@@ -204,31 +204,31 @@ if mode_counter == 1:
                     clockState=clkLastState 
 
                 if counter == 1:
-                    pwm_trans.ChangeDutyCycle(10)
-
-                elif counter == 2:
                     pwm_trans.ChangeDutyCycle(20)
 
-                elif counter == 3:
+                elif counter == 2:
                     pwm_trans.ChangeDutyCycle(30)
 
-                elif counter == 4:
+                elif counter == 3:
                     pwm_trans.ChangeDutyCycle(40)
 
-                elif counter == 5:
+                elif counter == 4:
                     pwm_trans.ChangeDutyCycle(50)
 
-                elif counter == 6:
+                elif counter == 5:
                     pwm_trans.ChangeDutyCycle(60)
 
-                elif counter == 7:
+                elif counter == 6:
                     pwm_trans.ChangeDutyCycle(70)
 
-                elif counter == 8:
+                elif counter == 7:
                     pwm_trans.ChangeDutyCycle(80)
 
-                elif counter == 9:
+                elif counter == 8:
                     pwm_trans.ChangeDutyCycle(90)
+
+                elif counter == 9:
+                    pwm_trans.ChangeDutyCycle(95)
 
                 elif counter == 10:
                     pwm_trans.ChangeDutyCycle(100)
