@@ -16,11 +16,11 @@ from selenium import webdriver
 
 
 GPIO.setmode(GPIO.BCM)
-
+mode_counter = 0
 
 #######     temp lezen code    #######
 
-trans = 20
+trans = 6
 GPIO.setup(trans, GPIO.OUT)
 pwm_trans = GPIO.PWM(trans, 50)
 pwm_trans.start(0)
@@ -37,52 +37,55 @@ temp_7 = 65
 temp_8 = 70
 temp_9 = 75
 temp_10 = 80
+if mode_counter == 0:
+        try:
+            def read_temp():
+                        global temp
+                        file = open('/sys/bus/w1/devices/28-0620198ec89f/w1_slave')
+                        text = file.read()
+                        file.close()
+                        secondline = text.split("\n")[1]
+                        temperatuurdata = secondline.split(" ")[9]
+                        temperatuur = float(temperatuurdata[2:])
+                        temp = round(temperatuur / 1000, 2)
+                        answer=DataRepository.insert_temp(temp)      
+                        socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
+                        print("De temp is: =", temp, "graden Celcius.")
 
-def read_temp():
-    while True:
-        global temp
-        file = open('/sys/bus/w1/devices/28-0620198ec89f/w1_slave')
-        text = file.read()
-        file.close()
-        secondline = text.split("\n")[1]
-        temperatuurdata = secondline.split(" ")[9]
-        temperatuur = float(temperatuurdata[2:])
-        temp = round(temperatuur / 1000, 2)
-        answer=DataRepository.insert_temp(temp)      
-        socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
-        print("De temp is: =", temp, "graden Celcius.")
+                        if temp >= temp_0 and temp < temp_1:
+                            pwm_trans.ChangeDutyCycle(10)
 
-        if temp >= temp_0 and temp < temp_1:
-            pwm_trans.ChangeDutyCycle(10)
+                        elif temp >= temp_1 and temp < temp_2:
+                            pwm_trans.ChangeDutyCycle(20)
 
-        elif temp >= temp_1 and temp < temp_2:
-            pwm_trans.ChangeDutyCycle(20)
+                        elif temp >= temp_2 and temp < temp_3:
+                            pwm_trans.ChangeDutyCycle(30)
 
-        elif temp >= temp_2 and temp < temp_3:
-            pwm_trans.ChangeDutyCycle(30)
+                        elif temp >= temp_3 and temp < temp_4:
+                            pwm_trans.ChangeDutyCycle(40)
 
-        elif temp >= temp_3 and temp < temp_4:
-            pwm_trans.ChangeDutyCycle(40)
+                        elif temp >= temp_4 and temp < temp_5:
+                            pwm_trans.ChangeDutyCycle(50)
 
-        elif temp >= temp_4 and temp < temp_5:
-            pwm_trans.ChangeDutyCycle(50)
+                        elif temp >= temp_5 and temp < temp_6:
+                            pwm_trans.ChangeDutyCycle(60)
 
-        elif temp >= temp_5 and temp < temp_6:
-            pwm_trans.ChangeDutyCycle(60)
+                        elif temp >= temp_6 and temp < temp_7:
+                            pwm_trans.ChangeDutyCycle(70)
 
-        elif temp >= temp_6 and temp < temp_7:
-            pwm_trans.ChangeDutyCycle(70)
+                        elif temp >= temp_7 and temp < temp_8:
+                            pwm_trans.ChangeDutyCycle(80)
 
-        elif temp >= temp_7 and temp < temp_8:
-            pwm_trans.ChangeDutyCycle(80)
+                        elif temp >= temp_8 and temp < temp_9:
+                            pwm_trans.ChangeDutyCycle(90)
 
-        elif temp >= temp_8 and temp < temp_9:
-            pwm_trans.ChangeDutyCycle(90)
+                        elif temp >= temp_10:
+                            pwm_trans.ChangeDutyCycle(100)
+                        else:
+                            pwm_trans.ChangeDutyCycle(0)
 
-        elif temp >= temp_10:
-            pwm_trans.ChangeDutyCycle(100)
-        else:
-            pwm_trans.ChangeDutyCycle(0)
+        except KeyboardInterrupt as KI:
+            print(KI)
 
 
 #######     lcd code    #######
@@ -179,27 +182,63 @@ def setup():
 
   GPIO.add_event_detect(clk_pin, GPIO.FALLING, callback=rotation_decode, bouncetime=200)
 
-def rotation_decode(pin):
-    global counter
-    global clkLastState
-    clockState = GPIO.input(27)
-    if clockState != clkLastState:
-        if GPIO.input(dt_pin) == 0:
-            counter -= 1
-            if counter < 0:
-                counter = 0
-            print('Rolling to the LEFT')
-            print(counter)
-        else:
-            counter += 1
-            if counter > 10:
-                counter = 10
-            print("Rolling to the RIGHT")
-            print(counter)
-        clockState=clkLastState 
+if mode_counter == 1:
+        try:
+            def rotation_decode(clk_pin):
+                global counter
+                global clkLastState
+                clockState = GPIO.input(18)
+                if clockState != clkLastState:
+                    if GPIO.input(dt_pin) == 0:
+                        counter -= 1
+                        if counter < 0:
+                            counter = 0
+                        print('Rolling to the LEFT')
+                        print(counter)
+                    else:
+                        counter += 1
+                        if counter > 10:
+                            counter = 10
+                        print("Rolling to the RIGHT")
+                        print(counter)
+                    clockState=clkLastState 
+
+                if counter == 1:
+                    pwm_trans.ChangeDutyCycle(10)
+
+                elif counter == 2:
+                    pwm_trans.ChangeDutyCycle(20)
+
+                elif counter == 3:
+                    pwm_trans.ChangeDutyCycle(30)
+
+                elif counter == 4:
+                    pwm_trans.ChangeDutyCycle(40)
+
+                elif counter == 5:
+                    pwm_trans.ChangeDutyCycle(50)
+
+                elif counter == 6:
+                    pwm_trans.ChangeDutyCycle(60)
+
+                elif counter == 7:
+                    pwm_trans.ChangeDutyCycle(70)
+
+                elif counter == 8:
+                    pwm_trans.ChangeDutyCycle(80)
+
+                elif counter == 9:
+                    pwm_trans.ChangeDutyCycle(90)
+
+                elif counter == 10:
+                    pwm_trans.ChangeDutyCycle(100)
+                else:
+                    pwm_trans.ChangeDutyCycle(0)
+        
+        except KeyboardInterrupt as e:
+            print(e)
 
 setup()
-
 try:
     while True:
         time.sleep(0.1)
@@ -209,7 +248,7 @@ finally:
     print("Program stopped...")
 
 
-#######     btn code    #######
+#######     powerbtn code    #######
 
 # ledPin = 21
 # btnPin = Button(20)
@@ -233,6 +272,33 @@ finally:
 #             switch_light({'lamp_id': '3', 'new_status': 0})
 #         else:
 #             switch_light({'lamp_id': '3', 'new_status': 1})
+
+
+#######     modebtn code    #######
+
+# ledPin = 21
+# btnPin = Button(20)
+
+# Code voor Hardware
+    #temp sensor
+
+# def setup_gpio():
+#     GPIO.setwarnings(False)
+#     GPIO.setmode(GPIO.BCM)
+
+#     GPIO.setup(ledPin, GPIO.OUT)
+#     GPIO.output(ledPin, GPIO.LOW)
+    
+#     btnPin.on_press(lees_knop)
+
+# def lees_knop(pin):
+#     if btnPin.pressed:
+#         print("**** button pressed ****")
+#         if GPIO.input(ledPin) == 1:
+#             switch_light({'lamp_id': '3', 'new_status': 0})
+#         else:
+#             switch_light({'lamp_id': '3', 'new_status': 1})
+
 
 
 
