@@ -10,8 +10,8 @@ from flask import Flask, jsonify, request
 from repositories.DataRepository import DataRepository
 from selenium import webdriver
 
-GPIO.setmode(GPIO.BCM)
-mode_counter = 0
+from subprocess import check_output
+
 
 #######     lcd code    #######
 
@@ -78,8 +78,12 @@ setup()
 init_LCD()
 try:
     while True:
-        tekst = ("ip")
-        write_message(tekst)
+        ips = check_output(['hostname', '--all-ip-addresses'])
+        ips = ips.decode('utf-8')
+        ips = ips.split()
+        ip = ips[1]
+        #print(f"IP: {ip}")
+        write_message(f"IP: {ip}")
         time.sleep(10)
 except KeyboardInterrupt as KI:
     print(KI)

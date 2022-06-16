@@ -11,7 +11,7 @@ from repositories.DataRepository import DataRepository
 from selenium import webdriver
 
 GPIO.setmode(GPIO.BCM)
-mode_counter = 0
+mode_counter = 1
 
 #######     rotary encoder code    #######
 
