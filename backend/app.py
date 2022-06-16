@@ -3,7 +3,7 @@ import time
 from RPi import GPIO
 from helpers.klasseknop import Button
 import threading
-
+import os
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify, request
@@ -153,7 +153,8 @@ setup()
 init_LCD()
 try:
     while True:
-        tekst = ("192.168.168.169")
+        ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
+        tekst = (ip)
         write_message(tekst)
         time.sleep(10)
 except KeyboardInterrupt as KI:
@@ -255,11 +256,11 @@ btnPin = Button(22)
 def setup_gpio():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    btnPin.on_press(lees_knop)
+    btnPin.on_press(lees_knop_power)
 
-def lees_knop(pin):
+def lees_knop_power(pin):
     print("**** button pressed ****")
-    #print(sudo shutdown now)
+    os.system("sudo poweroff")
 
 setup_gpio()
 try:
@@ -278,9 +279,9 @@ btnPin = Button(27)
 def setup_gpio():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    btnPin.on_press(lees_knop)
+    btnPin.on_press(lees_knop_mode)
 
-def lees_knop(pin):
+def lees_knop_mode(pin):
     print("**** button pressed ****")
 
 setup_gpio()
@@ -359,6 +360,18 @@ def start_thread():
     thread.start()
     time.sleep(0.5)
 
+def start_thread():
+    print("**** Starting THREAD ****")
+    thread = threading.Thread(target=lees_knop_power, args=(), daemon=True)
+    thread.start()
+    time.sleep(0.3)
+
+def start_thread():
+    print("**** Starting THREAD ****")
+    thread = threading.Thread(target=lees_knop_mode, args=(), daemon=True)
+    thread.start()
+    time.sleep(0.3)
+
 
 
 
@@ -405,6 +418,7 @@ def start_chrome_thread():
 if __name__ == '__main__':
     try:
         # setup_gpio()
+        setup()
         start_chrome_thread()   
         start_thread()
         print("**** Starting APP ****")
