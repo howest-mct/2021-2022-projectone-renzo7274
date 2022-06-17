@@ -9,8 +9,10 @@ from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify, request
 from repositories.DataRepository import DataRepository
 from subprocess import check_output
-
 from selenium import webdriver
+
+from grove.adc import ADC
+from helpers.klassesound import GroveLoudnessSensor
 
 # from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
@@ -154,12 +156,8 @@ def read_temp():
                 pwm_trans.ChangeDutyCycle(100)
             else:
                 pwm_trans.ChangeDutyCycle(0)
-            
-        # else:
-        #         rotation_decode(clk_pin)
 
         time.sleep(1)
-
 
 
 #######     lcd code    #######
@@ -235,23 +233,25 @@ def write_lcd():
 
 #######     rotary encoder code    #######
 
+def __init__(self, channel):
+        self.channel = channel
+        self.adc = ADC(address=8)
+ 
+@property
+def value(self):
+    return self.adc.read(self.channel)
+ 
+Grove = GroveLoudnessSensor
 
+def sound_detect():
+    sensor = GroveLoudnessSensor(0)
 
-
-
-
-        
-       
-# setup_trans()
-# setup_encoder()
-# try:
-#     while True:
-#         time.sleep(0.1)
-# except KeyboardInterrupt as e:
-#     print(e)
-# finally:
-#     GPIO.cleanup()
-#     print("Program stopped...")
+    print('Detecting loud...')
+    while True:
+        value = sensor.value
+        if value > 10:
+            print("Loud value {}, Loud Detected.".format(value))
+            time.sleep(1)
 
 
 #######     powerbtn code    #######
@@ -341,20 +341,20 @@ setup_gpio_mbtn()
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
-def start_thread_temp():
-    print("**** Starting THREAD temp ****")
+def start_thread_fans():
+    print("**** Starting THREAD fans ****")
     thread1 = threading.Thread(target=read_temp, args=(), daemon=True)
     thread1.start()
     time.sleep(1)
 
-# def start_thread_encoder():
-#     print("**** Starting THREAD ****")
-#     thread2 = threading.Thread(target=rotation_decode, args=(), daemon=True)
-#     thread2.start()
-#     time.sleep(0.5)
+def start_thread_sound():
+    print("**** Starting THREAD sound ****")
+    thread2 = threading.Thread(target=sound_detect, args=(), daemon=True)
+    thread2.start()
+    time.sleep(1)
 
 def start_thread_pbtn():
-    print("**** Starting THREAD ****")
+    print("**** Starting THREAD pbtn ****")
     thread3 = threading.Thread(target=lees_knop_power, args=(), daemon=True)
     thread3.start()
     time.sleep(0.3)
@@ -368,8 +368,8 @@ def start_thread_mbtn():
 
 def start_threads():
     print("**** Starting THREADS ****")
-    start_thread_temp()
-    # start_thread_encoder()
+    start_thread_fans()
+    start_thread_sound()
     start_thread_pbtn()
     start_thread_mbtn()
 
@@ -422,9 +422,7 @@ if __name__ == '__main__':
         init_LCD()
         write_lcd()
         setup_trans()
-        setup_encoder()
-        # setup_gpio_mbtn()
-        # setup_gpio_pbtn()
+        # setup_encoder()
         start_threads()
         # start_chrome_thread()   
         print("**** Starting APP ****")
