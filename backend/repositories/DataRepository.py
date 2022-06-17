@@ -20,6 +20,7 @@ class DataRepository:
         sql = "insert into historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'graden celcius',2,1)"
         params=[temp]
         return Database.execute_sql(sql,params)
+    
 
     
 

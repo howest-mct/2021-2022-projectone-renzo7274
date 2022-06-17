@@ -74,6 +74,7 @@ def init_LCD():
     send_instruction(0b00001111)  # display on of 0xf
     send_instruction(0b00000001)  # clear display/cursor home of 0x01
 
+
 setup()
 init_LCD()
 try:

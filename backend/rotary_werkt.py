@@ -16,9 +16,6 @@ mode_counter = 1
 #######     rotary encoder code    #######
 
 trans = 6
-GPIO.setup(trans, GPIO.OUT)
-pwm_trans = GPIO.PWM(trans, 50)
-pwm_trans.start(0)
 
 global counter
 counter = 0
@@ -36,9 +33,13 @@ def setup():
   GPIO.setup(sw_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
   GPIO.add_event_detect(clk_pin, GPIO.FALLING, callback=rotation_decode, bouncetime=200)
+  
 
 if mode_counter == 1:
         try:
+            GPIO.setup(trans, GPIO.OUT)
+            pwm_trans = GPIO.PWM(trans, 50)
+            pwm_trans.start(0)
             def rotation_decode(clk_pin):
                 global counter
                 global clkLastState
@@ -92,7 +93,6 @@ if mode_counter == 1:
         
         except KeyboardInterrupt as e:
             print(e)
-
 setup()
 try:
     while True:

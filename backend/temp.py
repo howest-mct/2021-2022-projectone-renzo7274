@@ -20,17 +20,17 @@ pwm_trans = GPIO.PWM(trans, 50)
 pwm_trans.start(0)
 
 temp = {}
-temp_0 = 30
-temp_1 = 35
-temp_2 = 40
-temp_3 = 45
-temp_4 = 50
-temp_5 = 55
-temp_6 = 60
-temp_7 = 65
-temp_8 = 70
-temp_9 = 75
-temp_10 = 80
+temp_0 = 20
+temp_1 = 25
+temp_2 = 30
+temp_3 = 35
+temp_4 = 40
+temp_5 = 45
+temp_6 = 50
+temp_7 = 55
+temp_8 = 60
+temp_9 = 65
+temp_10 = 70
 if mode_counter == 0:
         try:
             def read_temp():
@@ -42,8 +42,8 @@ if mode_counter == 0:
                     temperatuurdata = secondline.split(" ")[9]
                     temperatuur = float(temperatuurdata[2:])
                     temp = round(temperatuur / 1000, 2)
-                    answer=DataRepository.insert_temp(temp)      
-                    SocketIO.emit('B2F_refresh', {'data': temp}, broadcast=True)
+                    # answer=DataRepository.insert_temp(temp)      
+                    # SocketIO.emit('B2F_refresh', {'data': temp}, broadcast=True)
                     print("De temp is: =", temp, "graden Celcius.")
 
                     if temp >= temp_0 and temp < temp_1:
@@ -77,6 +77,8 @@ if mode_counter == 0:
                         pwm_trans.ChangeDutyCycle(100)
                     else:
                         pwm_trans.ChangeDutyCycle(0)
-
+            while True:
+                read_temp()
+                time.sleep(1)
         except KeyboardInterrupt as KI:
             print(KI)

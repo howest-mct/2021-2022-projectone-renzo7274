@@ -15,8 +15,10 @@ class Button:
         return not ingedrukt
 
     def on_press(self, call_method):
+        print("test on press btn")
         GPIO.add_event_detect(self.pin, GPIO.FALLING,
                               call_method, bouncetime=self.bouncetime)
+        
 
     def on_release(self, call_method):
         GPIO.add_event_detect(self.pin, GPIO.RISING,
