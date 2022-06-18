@@ -137,7 +137,7 @@ def auto_fan():
         temperatuur = float(temperatuurdata[2:])
         temp = round(temperatuur / 1000, 2)
         answer=DataRepository.insert_temp(temp)      
-        socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
+        socketio.emit('B2F_refresh', {'data': (f"{temp} °C")}, broadcast=True)
         print(f"{temp} °C")
 
         if mode_counter == 0:
@@ -313,6 +313,7 @@ def sound_detect():
             sound = value
             print(f"{sound} dB")
             answer=DataRepository.insert_sound(sound)
+            socketio.emit('B2F_refresh', {'data_sound': (f"{sound} dB")}, broadcast=True)
             time.sleep(5)
 
 
@@ -388,9 +389,18 @@ def hallo():
 @app.route(endpoint + '/temp', methods=['GET'])
 def get_temp():
     if request.method == 'GET':
-        data = DataRepository.read_latest_temp_data()
-        if data is not None:
-            return jsonify(data=data), 200
+        data_temp = DataRepository.read_latest_temp_data()
+        if data_temp is not None:
+            return jsonify(data=data_temp), 200
+        else:
+            return jsonify(data="ERROR"), 404
+
+@app.route(endpoint + '/sound', methods=['GET'])
+def get_sound():
+    if request.method == 'GET':
+        data_sound = DataRepository.read_latest_sound_data()
+        if data_sound is not None:
+            return jsonify(data_sound=data_sound), 200
         else:
             return jsonify(data="ERROR"), 404
 
@@ -398,7 +408,6 @@ def get_temp():
 def initial_connection():
     print('A new client connect')
     # # Send to the client!
-    # vraag de status op van de lampen uit de DB
 
 
 

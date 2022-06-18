@@ -12,7 +12,7 @@ class DataRepository:
 
     @staticmethod
     def read_latest_temp_data():
-        sql = "SELECT waarde FROM database_final.historiek where DeviceID = 1 order by Actiedatum DESC limit 1"
+        sql = "SELECT concat(waarde,' °C') FROM database_final.historiek where DeviceID = 1 order by Actiedatum DESC limit 1"
         return Database.get_one_row(sql)
 
     @staticmethod
