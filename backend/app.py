@@ -37,6 +37,7 @@ sw_pin = 27
 clkLastState = 0
 switchState = 0
 counter = 0
+fanspeed = 0
 
 def setup_encoder():
   GPIO.setmode(GPIO.BCM)
@@ -47,60 +48,94 @@ def setup_encoder():
   GPIO.add_event_detect(clk_pin, GPIO.BOTH, callback=manual_fan, bouncetime=200)
 
 def manual_fan(clk_pin):
-                global counter
-                global clkLastState
-                clockState = GPIO.input(18)
-                if clockState != clkLastState:
-                    if GPIO.input(dt_pin) == 0:
-                        counter -= 1
-                        if counter < 0:
-                            counter = 0
-                        print('Rolling to the LEFT')
-                        print(counter)
-                    else:
-                        counter += 1
-                        if counter > 10:
-                            counter = 10
-                        print("Rolling to the RIGHT")
-                        print(counter)
-                    clockState=clkLastState
+    if mode_counter == 1:
+        global counter
+        global fanspeed
+        global clkLastState
+        clockState = GPIO.input(18)
+        if clockState != clkLastState:
+            if GPIO.input(dt_pin) == 0:
+                counter -= 1
+                fanspeed-= 1
+                if counter < 0:
+                    counter = 0
+                if fanspeed < 0:
+                    fanspeed = 0
+                print('Rolling to the LEFT')
+                print(counter)
+                answer=DataRepository.insert_fanspeed(fanspeed)
+            else:
+                counter += 1
+                fanspeed+= 1
+                if counter > 10:
+                    counter = 10
+                if fanspeed > 10:
+                    fanspeed = 10
+                print("Rolling to the RIGHT")
+                print(counter)
+                answer=DataRepository.insert_fanspeed(fanspeed)
+            clockState=clkLastState
+        
 
-                if mode_counter == 1:
-                    if counter == 1:
-                        pwm_trans.ChangeDutyCycle(20)
+        
+            # global fanspeed
+            if counter == 1:
+                pwm_trans.ChangeDutyCycle(20)
+                # fanspeed = 1
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 2:
-                        pwm_trans.ChangeDutyCycle(30)
+            elif counter == 2:
+                pwm_trans.ChangeDutyCycle(30)
+                # fanspeed = 2
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 3:
-                        pwm_trans.ChangeDutyCycle(40)
+            elif counter == 3:
+                pwm_trans.ChangeDutyCycle(40)
+                # fanspeed = 3
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 4:
-                        pwm_trans.ChangeDutyCycle(50)
+            elif counter == 4:
+                pwm_trans.ChangeDutyCycle(50)
+                # fanspeed = 4
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 5:
-                        pwm_trans.ChangeDutyCycle(60)
+            elif counter == 5:
+                pwm_trans.ChangeDutyCycle(60)
+                # fanspeed = 5
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 6:
-                        pwm_trans.ChangeDutyCycle(70)
+            elif counter == 6:
+                pwm_trans.ChangeDutyCycle(70)
+                # fanspeed = 6
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 7:
-                        pwm_trans.ChangeDutyCycle(80)
+            elif counter == 7:
+                pwm_trans.ChangeDutyCycle(80)
+                # fanspeed = 7
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 8:
-                        pwm_trans.ChangeDutyCycle(90)
+            elif counter == 8:
+                pwm_trans.ChangeDutyCycle(90)
+                # fanspeed = 8
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 9:
-                        pwm_trans.ChangeDutyCycle(95)
+            elif counter == 9:
+                pwm_trans.ChangeDutyCycle(95)
+                # fanspeed = 9
+                # answer=DataRepository.insert_fanspeed(fanspeed)
 
-                    elif counter == 10:
-                        pwm_trans.ChangeDutyCycle(100)
-                    else:
-                        pwm_trans.ChangeDutyCycle(0)
+            elif counter == 10:
+                pwm_trans.ChangeDutyCycle(100)
+                # fanspeed = 10
+                # answer=DataRepository.insert_fanspeed(fanspeed)
+            else:
+                pwm_trans.ChangeDutyCycle(0)
+                # fanspeed = 0
+                # answer=DataRepository.insert_fanspeed(fanspeed)
+                
 
 
 def auto_fan():
-    #global temp
     temp = {}
     temp_0 = 30
     temp_1 = 35
@@ -123,7 +158,7 @@ def auto_fan():
         temp = round(temperatuur / 1000, 2)
         answer=DataRepository.insert_temp(temp)      
         # SocketIO.emit('B2F_refresh', {'data': temp}, broadcast=True)
-        print("De temp is: =", temp, "graden Celcius.")
+        print(f"{temp} °C")
 
         if mode_counter == 0:
             if temp >= temp_0 and temp < temp_1:
@@ -246,12 +281,14 @@ Grove = GroveLoudnessSensor
 
 def sound_detect():
     sensor = GroveLoudnessSensor(0)
+    sound = {}
 
-    print('Detecting loud...')
     while True:
         value = sensor.value
         if value > 10:
-            print("Loud value {}, Loud Detected.".format(value))
+            sound = value
+            print(f"{sound} dB")
+            answer=DataRepository.insert_sound(sound)
             time.sleep(5)
 
 

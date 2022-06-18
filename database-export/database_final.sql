@@ -1,6 +1,5 @@
 CREATE DATABASE  IF NOT EXISTS `database_final` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `database_final`;
-
 -- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
 -- Host: localhost    Database: database_final
@@ -29,7 +28,7 @@ CREATE TABLE `actie` (
   `ActieID` int NOT NULL AUTO_INCREMENT,
   `ActieBeschrijving` varchar(250) NOT NULL,
   PRIMARY KEY (`ActieID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='[';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COMMENT='[';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,6 +37,7 @@ CREATE TABLE `actie` (
 
 LOCK TABLES `actie` WRITE;
 /*!40000 ALTER TABLE `actie` DISABLE KEYS */;
+INSERT INTO `actie` VALUES (1,'temp meten'),(2,'geluid meten'),(3,'draai meten'),(4,'fan snelheid'),(5,'button ingedrukt'),(6,'geluidgrens aangepast');
 /*!40000 ALTER TABLE `actie` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +57,7 @@ CREATE TABLE `device` (
   `Aankoopkost` float DEFAULT NULL,
   `Meeteenheid` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`DeviceID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,6 +66,7 @@ CREATE TABLE `device` (
 
 LOCK TABLES `device` WRITE;
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
+INSERT INTO `device` VALUES (1,'Temp sensor',NULL,'temperatuur sensor','sensor',NULL,'graden celcius'),(2,'Geluid sensor','Seed','geluid sensor','sensor',NULL,'decibel'),(3,'Rotary encoder',NULL,'draaiknop','sensor',NULL,NULL),(4,'Fan(s)','Kootek','cooling fans','actuator',NULL,NULL),(5,'Scherm',NULL,'lcd scherm','actuator',NULL,NULL),(6,'Knop(aan/uit)',NULL,'power knop','actuator',NULL,NULL),(7,'Knop(aansturing)',NULL,'knop voor rotary encoder of tem sensor','actuator',NULL,NULL);
 /*!40000 ALTER TABLE `device` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,9 +87,9 @@ CREATE TABLE `historiek` (
   PRIMARY KEY (`Volgnummer`),
   KEY `fk_Historiek_Device_idx` (`DeviceID`),
   KEY `fk_Historiek_Actie1_idx` (`ActieID`),
-  CONSTRAINT `fk_Historiek_Actie1` FOREIGN KEY (`ActieID`) REFERENCES `actie` (`ActieID`),
-  CONSTRAINT `fk_Historiek_Device` FOREIGN KEY (`DeviceID`) REFERENCES `device` (`DeviceID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `fk_Historiek_Actie1` FOREIGN KEY (`ActieID`) REFERENCES `actie` (`ActieID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_Historiek_Device` FOREIGN KEY (`DeviceID`) REFERENCES `device` (`DeviceID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,6 +98,7 @@ CREATE TABLE `historiek` (
 
 LOCK TABLES `historiek` WRITE;
 /*!40000 ALTER TABLE `historiek` DISABLE KEYS */;
+INSERT INTO `historiek` VALUES (1,'2022-06-18 14:35:20',50,'graden celcius',1,1);
 /*!40000 ALTER TABLE `historiek` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,7 +114,7 @@ CREATE TABLE `setting` (
   `Niveau` varchar(45) NOT NULL,
   `Waarde` int NOT NULL,
   PRIMARY KEY (`SettingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,8 +123,13 @@ CREATE TABLE `setting` (
 
 LOCK TABLES `setting` WRITE;
 /*!40000 ALTER TABLE `setting` DISABLE KEYS */;
+INSERT INTO `setting` VALUES (1,'off',500),(2,'quiet',50),(3,'normal',60),(4,'loud',70);
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'database_final'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -133,4 +140,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-31 14:39:24
+-- Dump completed on 2022-06-18 14:36:00
