@@ -1,8 +1,8 @@
 'use strict';
 
-const lanIP = `${window.location.hostname}:5000`;
+const lanIP = `${window.location.hostname}:5500`;
 console.log(lanIP);
-const socket = io(`http://${lanIP}`);
+const socket = io(`http://192.168.168.169:5000`);
 
 const showTemp = function (jsonObject) {
   console.log(jsonObject.data.waarde)

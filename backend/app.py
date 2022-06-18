@@ -36,7 +36,7 @@ dt_pin = 17
 sw_pin = 27
 clkLastState = 0
 switchState = 0
-counter = 0
+# counter = 0
 fanspeed = 0
 
 def setup_encoder():
@@ -49,62 +49,64 @@ def setup_encoder():
 
 def manual_fan(clk_pin):
     if mode_counter == 1:
-        global counter
+        # global counter
         global fanspeed
         global clkLastState
         clockState = GPIO.input(18)
         if clockState != clkLastState:
             if GPIO.input(dt_pin) == 0:
-                counter -= 1
+                # counter -= 1
                 fanspeed-= 1
-                if counter < 0:
-                    counter = 0
+                # if counter < 0:
+                #     counter = 0
                 if fanspeed < 0:
                     fanspeed = 0
                 print('Rolling to the LEFT')
-                print(counter)
+                # print(counter)
+                print(fanspeed)
                 answer=DataRepository.insert_fanspeed(fanspeed)
             else:
-                counter += 1
+                # counter += 1
                 fanspeed+= 1
-                if counter > 10:
-                    counter = 10
+                # if counter > 10:
+                #     counter = 10
                 if fanspeed > 10:
                     fanspeed = 10
                 print("Rolling to the RIGHT")
-                print(counter)
+                # print(counter)
+                print(fanspeed)
                 answer=DataRepository.insert_fanspeed(fanspeed)
             clockState=clkLastState
                 
             # opslaan database draaiknop waarde eigenlijk nutteloos.
-            if counter == 1:
+            if fanspeed == 1:
                 pwm_trans.ChangeDutyCycle(20)                
 
-            elif counter == 2:
+            elif fanspeed == 2:
                 pwm_trans.ChangeDutyCycle(30)                
 
-            elif counter == 3:
+            elif fanspeed == 3:
                 pwm_trans.ChangeDutyCycle(40)                
 
-            elif counter == 4:
+            elif fanspeed == 4:
                 pwm_trans.ChangeDutyCycle(50)                
 
-            elif counter == 5:
+            elif fanspeed == 5:
                 pwm_trans.ChangeDutyCycle(60)               
 
-            elif counter == 6:
+            elif fanspeed == 6:
                 pwm_trans.ChangeDutyCycle(70)                
 
-            elif counter == 7:
+            elif fanspeed == 7:
                 pwm_trans.ChangeDutyCycle(80)               
 
-            elif counter == 8:
+            elif fanspeed == 8:
                 pwm_trans.ChangeDutyCycle(90)               
 
-            elif counter == 9:
+            elif fanspeed == 9:
                 pwm_trans.ChangeDutyCycle(95)                
 
-            elif counter == 10:
+            elif fanspeed == 10:
                 pwm_trans.ChangeDutyCycle(100)                
             else:
                 pwm_trans.ChangeDutyCycle(0)
@@ -135,7 +137,7 @@ def auto_fan():
         temperatuur = float(temperatuurdata[2:])
         temp = round(temperatuur / 1000, 2)
         answer=DataRepository.insert_temp(temp)      
-        # SocketIO.emit('B2F_refresh', {'data': temp}, broadcast=True)
+        socketio.emit('B2F_refresh', {'data': temp}, broadcast=True)
         print(f"{temp} °C")
 
         if mode_counter == 0:
