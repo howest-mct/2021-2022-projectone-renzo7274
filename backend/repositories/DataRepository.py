@@ -42,3 +42,25 @@ class DataRepository:
         sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'fan snelheid',4,4)"
         params=[fanspeed]
         return Database.execute_sql(sql,params)
+
+    @staticmethod
+    def read_latest_mbtn_data():
+        sql = "SELECT waarde FROM database_final.historiek where DeviceID = 7 order by Actiedatum DESC limit 1"
+        return Database.get_one_row(sql)
+
+    @staticmethod
+    def insert_mbtn(mode_counter):
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'knop voor rotary encoder of temp sensor',7,5)"
+        params=[mode_counter]
+        return Database.execute_sql(sql,params)
+
+    # @staticmethod
+    # def read_latest_pbtn_data():
+    #     sql = "SELECT waarde FROM database_final.historiek where DeviceID = 6 order by Actiedatum DESC limit 1"
+    #     return Database.get_one_row(sql)
+    
+    @staticmethod
+    def insert_pbtn(status_pbtn):
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'power knop',6,5)"
+        params=[status_pbtn]
+        return Database.execute_sql(sql,params)

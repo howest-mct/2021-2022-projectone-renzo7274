@@ -75,80 +75,58 @@ def manual_fan(clk_pin):
                 print(counter)
                 answer=DataRepository.insert_fanspeed(fanspeed)
             clockState=clkLastState
-        
-
-        
-            # global fanspeed
+                
+            # opslaan database draaiknop waarde eigenlijk nutteloos.
             if counter == 1:
-                pwm_trans.ChangeDutyCycle(20)
-                # fanspeed = 1
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(20)                
 
             elif counter == 2:
-                pwm_trans.ChangeDutyCycle(30)
-                # fanspeed = 2
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(30)                
 
             elif counter == 3:
-                pwm_trans.ChangeDutyCycle(40)
-                # fanspeed = 3
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(40)                
 
             elif counter == 4:
-                pwm_trans.ChangeDutyCycle(50)
-                # fanspeed = 4
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(50)                
 
             elif counter == 5:
-                pwm_trans.ChangeDutyCycle(60)
-                # fanspeed = 5
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(60)               
 
             elif counter == 6:
-                pwm_trans.ChangeDutyCycle(70)
-                # fanspeed = 6
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(70)                
 
             elif counter == 7:
-                pwm_trans.ChangeDutyCycle(80)
-                # fanspeed = 7
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(80)               
 
             elif counter == 8:
-                pwm_trans.ChangeDutyCycle(90)
-                # fanspeed = 8
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(90)               
 
             elif counter == 9:
-                pwm_trans.ChangeDutyCycle(95)
-                # fanspeed = 9
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(95)                
 
             elif counter == 10:
-                pwm_trans.ChangeDutyCycle(100)
-                # fanspeed = 10
-                # answer=DataRepository.insert_fanspeed(fanspeed)
+                pwm_trans.ChangeDutyCycle(100)                
             else:
                 pwm_trans.ChangeDutyCycle(0)
-                # fanspeed = 0
-                # answer=DataRepository.insert_fanspeed(fanspeed)
-                
+                           
 
 
 def auto_fan():
+    global fanspeed
     temp = {}
-    temp_0 = 30
-    temp_1 = 35
-    temp_2 = 40
-    temp_3 = 45
-    temp_4 = 50
-    temp_5 = 55
-    temp_6 = 60
-    temp_7 = 65
-    temp_8 = 70
-    temp_9 = 75
-    temp_10 = 80
+    temp_0 = 20
+    temp_1 = 25
+    temp_2 = 30
+    temp_3 = 35
+    temp_4 = 40
+    temp_5 = 45
+    temp_6 = 50
+    temp_7 = 55
+    temp_8 = 60
+    temp_9 = 65
+    temp_10 = 70
     while True:
+        stat = 0
         file = open('/sys/bus/w1/devices/28-0620198ec89f/w1_slave')
         text = file.read()
         file.close()
@@ -162,36 +140,80 @@ def auto_fan():
 
         if mode_counter == 0:
             if temp >= temp_0 and temp < temp_1:
-                pwm_trans.ChangeDutyCycle(10)
+                pwm_trans.ChangeDutyCycle(20)
+                if stat == 0:
+                    fanspeed = 1
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_1 and temp < temp_2:
-                pwm_trans.ChangeDutyCycle(20)
+                pwm_trans.ChangeDutyCycle(30)
+                if stat == 0:
+                    fanspeed = 2
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_2 and temp < temp_3:
-                pwm_trans.ChangeDutyCycle(30)
+                pwm_trans.ChangeDutyCycle(40)
+                if stat == 0:
+                    fanspeed = 3
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_3 and temp < temp_4:
-                pwm_trans.ChangeDutyCycle(40)
+                pwm_trans.ChangeDutyCycle(50)
+                if stat == 0:
+                    fanspeed = 4
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_4 and temp < temp_5:
-                pwm_trans.ChangeDutyCycle(50)
+                pwm_trans.ChangeDutyCycle(60)
+                if stat == 0:
+                    fanspeed = 5
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_5 and temp < temp_6:
-                pwm_trans.ChangeDutyCycle(60)
+                pwm_trans.ChangeDutyCycle(70)
+                if stat == 0:
+                    fanspeed = 6
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_6 and temp < temp_7:
-                pwm_trans.ChangeDutyCycle(70)
+                pwm_trans.ChangeDutyCycle(80)
+                if stat == 0:
+                    fanspeed = 7
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_7 and temp < temp_8:
-                pwm_trans.ChangeDutyCycle(80)
+                pwm_trans.ChangeDutyCycle(90)
+                if stat == 0:
+                    fanspeed = 8
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_8 and temp < temp_9:
-                pwm_trans.ChangeDutyCycle(90)
+                pwm_trans.ChangeDutyCycle(95)
+                if stat == 0:
+                    fanspeed = 9
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
             elif temp >= temp_10:
                 pwm_trans.ChangeDutyCycle(100)
+                if stat == 0:
+                    fanspeed = 10
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
             else:
                 pwm_trans.ChangeDutyCycle(0)
+                if stat == 0:
+                    fanspeed = 0
+                    answer=DataRepository.insert_fanspeed(fanspeed)
+                    stat = 1
 
         time.sleep(5)
 
@@ -301,8 +323,9 @@ def setup_gpio_pbtn():
     GPIO.setmode(GPIO.BCM)
     pbtnPin.on_press(lees_knop_power)
 
-def lees_knop_power(pin):
+def lees_knop_power(ppin):
     print("**** power button pressed ****")
+    answer=DataRepository.insert_pbtn(1)
     # os.system("sudo poweroff")
 
 setup_gpio_pbtn()
@@ -317,16 +340,20 @@ def setup_gpio_mbtn():
     GPIO.setmode(GPIO.BCM)
     mbtnPin.on_press(lees_knop_mode)
 
-def lees_knop_mode(pin):
+ 
+
+def lees_knop_mode(mpin):
     global mode_counter
     if mode_counter == 1:
         mode_counter = 0
         print(mode_counter)
         print("**** button pressed: rotary ****")
+        answer=DataRepository.insert_mbtn(mode_counter)
     else:
         mode_counter = 1
         print(mode_counter)
         print("**** button pressed: rotary ****")
+        answer=DataRepository.insert_mbtn(mode_counter)
 
 setup_gpio_mbtn()
 
@@ -471,7 +498,8 @@ if __name__ == '__main__':
         start_threads()
         start_chrome_thread()   
         print("**** Starting APP ****")
-        socketio.run(app, port=5000, debug=False, host='0.0.0.0')  
+        socketio.run(app, debug=False, host='0.0.0.0')  
+        # port=5000,
         while True: 
             time.sleep(1)
     except KeyboardInterrupt:
