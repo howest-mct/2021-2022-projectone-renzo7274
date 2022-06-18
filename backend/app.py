@@ -14,8 +14,8 @@ from selenium import webdriver
 from grove.adc import ADC
 from helpers.klassesound import GroveLoudnessSensor
 
-# from selenium import webdriver
-# from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 GPIO.setmode(GPIO.BCM)
 global mode_counter
@@ -100,7 +100,7 @@ def manual_fan(clk_pin):
 
 
 def auto_fan():
-
+    #global temp
     temp = {}
     temp_0 = 30
     temp_1 = 35
@@ -121,7 +121,7 @@ def auto_fan():
         temperatuurdata = secondline.split(" ")[9]
         temperatuur = float(temperatuurdata[2:])
         temp = round(temperatuur / 1000, 2)
-        # answer=DataRepository.insert_temp(temp)      
+        answer=DataRepository.insert_temp(temp)      
         # SocketIO.emit('B2F_refresh', {'data': temp}, broadcast=True)
         print("De temp is: =", temp, "graden Celcius.")
 
@@ -298,39 +298,39 @@ setup_gpio_mbtn()
 
 #######     Flask code    #######
 
-# app = Flask(__name__)
-# app.config['SECRET_KEY'] = 'geheim!'
-# socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
-#                     engineio_logger=False, ping_timeout=1)
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'geheim!'
+socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
+                    engineio_logger=False, ping_timeout=1)
 
-# CORS(app)
+CORS(app)
 
-# @socketio.on_error()        # Handles the default namespace
-# def error_handler(e):
-#     print(e)
+@socketio.on_error()        # Handles the default namespace
+def error_handler(e):
+    print(e)
 
 
 
 
 #######     API ENDPOINTS    #######
-# endpoint = "/api/v1"
+endpoint = "/api/v1"
 
-# @app.route('/')
-# def hallo():
-#     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+@app.route('/')
+def hallo():
+    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
-# @app.route(endpoint + '/temp', methods=['GET'])
-# def get_temp():
-#     if request.method == 'GET':
-#         data = DataRepository.read_latest_temp_data()
-#         if data is not None:
-#             return jsonify(data=data), 200
-#         else:
-#             return jsonify(data="ERROR"), 404
+@app.route(endpoint + '/temp', methods=['GET'])
+def get_temp():
+    if request.method == 'GET':
+        data = DataRepository.read_latest_temp_data()
+        if data is not None:
+            return jsonify(data=data), 200
+        else:
+            return jsonify(data="ERROR"), 404
 
-# @socketio.on('connect')
-# def initial_connection():
-#     print('A new client connect')
+@socketio.on('connect')
+def initial_connection():
+    print('A new client connect')
     # # Send to the client!
     # vraag de status op van de lampen uit de DB
 
@@ -386,38 +386,38 @@ def start_threads():
 
 #######     chrome kiosk    #######
 
-# def start_chrome_kiosk():
-#     import os
+def start_chrome_kiosk():
+    import os
 
-#     os.environ['DISPLAY'] = ':0.0'
-#     options = webdriver.ChromeOptions()
-#     # options.headless = True
-#     # options.add_argument("--window-size=1920,1080")
-#     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36")
-#     options.add_argument('--ignore-certificate-errors')
-#     options.add_argument('--allow-running-insecure-content')
-#     options.add_argument("--disable-extensions")
-#     # options.add_argument("--proxy-server='direct://'")
-#     options.add_argument("--proxy-bypass-list=*")
-#     options.add_argument("--start-maximized")
-#     options.add_argument('--disable-gpu')
-#     # options.add_argument('--disable-dev-shm-usage')
-#     options.add_argument('--no-sandbox')
-#     options.add_argument('--kiosk')
-#     # chrome_options.add_argument('--no-sandbox')         
-#     # options.add_argument("disable-infobars")
-#     options.add_experimental_option("excludeSwitches", ["enable-automation"])
-#     options.add_experimental_option('useAutomationExtension', False)
+    os.environ['DISPLAY'] = ':0.0'
+    options = webdriver.ChromeOptions()
+    # options.headless = True
+    # options.add_argument("--window-size=1920,1080")
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36")
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--allow-running-insecure-content')
+    options.add_argument("--disable-extensions")
+    # options.add_argument("--proxy-server='direct://'")
+    options.add_argument("--proxy-bypass-list=*")
+    options.add_argument("--start-maximized")
+    options.add_argument('--disable-gpu')
+    # options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--kiosk')
+    # chrome_options.add_argument('--no-sandbox')         
+    # options.add_argument("disable-infobars")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
 
-#     driver = webdriver.Chrome(options=options)
-#     driver.get("http://localhost")
-#     while True:
-#         pass
+    driver = webdriver.Chrome(options=options)
+    driver.get("http://localhost")
+    while True:
+        pass
 
-# def start_chrome_thread():
-#     print("**** Starting CHROME ****")
-#     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
-#     chromeThread.start()
+def start_chrome_thread():
+    print("**** Starting CHROME ****")
+    chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
+    chromeThread.start()
 
 
 
@@ -432,9 +432,9 @@ if __name__ == '__main__':
         setup_trans()
         setup_encoder()
         start_threads()
-        # start_chrome_thread()   
+        start_chrome_thread()   
         print("**** Starting APP ****")
-        # socketio.run(app, port=5000, debug=False, host='0.0.0.0')  
+        socketio.run(app, port=5000, debug=False, host='0.0.0.0')  
         while True: 
             time.sleep(1)
     except KeyboardInterrupt:
