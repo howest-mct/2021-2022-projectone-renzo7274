@@ -21,7 +21,7 @@ GPIO.setmode(GPIO.BCM)
 global mode_counter
 mode_counter = 0
 
-#######     temp lezen code    #######
+#######     fan control code    #######
 
 trans = 6
 def setup_trans():
@@ -44,9 +44,9 @@ def setup_encoder():
   GPIO.setup(dt_pin, GPIO.IN, GPIO.PUD_UP)
   GPIO.setup(sw_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-  GPIO.add_event_detect(clk_pin, GPIO.BOTH, callback=rotation_decode, bouncetime=200)
+  GPIO.add_event_detect(clk_pin, GPIO.BOTH, callback=manual_fan, bouncetime=200)
 
-def rotation_decode(clk_pin):
+def manual_fan(clk_pin):
                 global counter
                 global clkLastState
                 clockState = GPIO.input(18)
@@ -63,7 +63,8 @@ def rotation_decode(clk_pin):
                             counter = 10
                         print("Rolling to the RIGHT")
                         print(counter)
-                    clockState=clkLastState 
+                    clockState=clkLastState
+
                 if mode_counter == 1:
                     if counter == 1:
                         pwm_trans.ChangeDutyCycle(20)
@@ -98,7 +99,7 @@ def rotation_decode(clk_pin):
                         pwm_trans.ChangeDutyCycle(0)
 
 
-def read_temp():
+def auto_fan():
 
     temp = {}
     temp_0 = 30
@@ -157,7 +158,7 @@ def read_temp():
             else:
                 pwm_trans.ChangeDutyCycle(0)
 
-        time.sleep(1)
+        time.sleep(5)
 
 
 #######     lcd code    #######
@@ -228,10 +229,10 @@ def write_lcd():
     ip = ips[1]
     #print(f"IP: {ip}")
     write_message(f"IP: {ip}")
-    time.sleep(10)
+    time.sleep(5)
 
 
-#######     rotary encoder code    #######
+#######     sound sensor code    #######
 
 def __init__(self, channel):
         self.channel = channel
@@ -251,7 +252,7 @@ def sound_detect():
         value = sensor.value
         if value > 10:
             print("Loud value {}, Loud Detected.".format(value))
-            time.sleep(1)
+            time.sleep(5)
 
 
 #######     powerbtn code    #######
@@ -277,9 +278,9 @@ mbtnPin = Button(27)
 def setup_gpio_mbtn():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    mbtnPin.on_press(lees_knop)
+    mbtnPin.on_press(lees_knop_mode)
 
-def lees_knop(pin):
+def lees_knop_mode(pin):
     global mode_counter
     if mode_counter == 1:
         mode_counter = 0
@@ -341,34 +342,41 @@ setup_gpio_mbtn()
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
-def start_thread_fans():
-    print("**** Starting THREAD fans ****")
-    thread1 = threading.Thread(target=read_temp, args=(), daemon=True)
+def start_thread_afans():
+    print("**** Calling THREAD afans ****")
+    thread1 = threading.Thread(target=auto_fan, args=(), daemon=True)
+    thread1.start()
+    time.sleep(1)
+
+def start_thread_mfans():
+    print("**** Calling THREAD mfans ****")
+    thread1 = threading.Thread(target=manual_fan, args=(), daemon=True)
     thread1.start()
     time.sleep(1)
 
 def start_thread_sound():
-    print("**** Starting THREAD sound ****")
+    print("**** Calling THREAD sound ****")
     thread2 = threading.Thread(target=sound_detect, args=(), daemon=True)
     thread2.start()
     time.sleep(1)
 
 def start_thread_pbtn():
-    print("**** Starting THREAD pbtn ****")
+    print("**** Calling THREAD pbtn ****")
     thread3 = threading.Thread(target=lees_knop_power, args=(), daemon=True)
     thread3.start()
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 def start_thread_mbtn():
-    print("**** Starting THREAD mbtn ****")
-    thread4 = threading.Thread(target=lees_knop, args=(), daemon=True)
+    print("**** Calling THREAD mbtn ****")
+    thread4 = threading.Thread(target=lees_knop_mode, args=(), daemon=True)
     thread4.start()
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def start_threads():
     print("**** Starting THREADS ****")
-    start_thread_fans()
+    start_thread_afans()
+    start_thread_mfans()
     start_thread_sound()
     start_thread_pbtn()
     start_thread_mbtn()
@@ -422,7 +430,7 @@ if __name__ == '__main__':
         init_LCD()
         write_lcd()
         setup_trans()
-        # setup_encoder()
+        setup_encoder()
         start_threads()
         # start_chrome_thread()   
         print("**** Starting APP ****")
