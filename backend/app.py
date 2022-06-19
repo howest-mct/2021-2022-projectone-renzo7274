@@ -36,7 +36,6 @@ dt_pin = 17
 sw_pin = 27
 clkLastState = 0
 switchState = 0
-# counter = 0
 global fanspeed 
 fanspeed = 0
 
@@ -49,39 +48,24 @@ def setup_encoder():
   GPIO.add_event_detect(clk_pin, GPIO.BOTH, callback=manual_fan, bouncetime=200)
 
 def manual_fan(clk_pin):
-    print( "in manuel fan")
     if mode_counter == 1:
-        # global counter
         global fanspeed
         global clkLastState
         clockState = GPIO.input(18)
         if clockState != clkLastState:
             if GPIO.input(dt_pin) == 0:
-                # counter -= 1
                 fanspeed-= 1
-                # if counter < 0:
-                #     counter = 0
                 if fanspeed < 0:
                     fanspeed = 0
-                print('Rolling to the LEFT')
-                # print(counter)
-                print(fanspeed)
                 answer=DataRepository.insert_fanspeed(fanspeed)
             else:
-                # counter += 1
                 fanspeed+= 1
-                # if counter > 10:
-                #     counter = 10
                 if fanspeed > 10:
                     fanspeed = 10
-                print("Rolling to the RIGHT")
-                # print(counter)
-                print(fanspeed)
                 answer=DataRepository.insert_fanspeed(fanspeed)
             clockState=clkLastState
             update_fanspeed()
 
-            # opslaan database draaiknop waarde eigenlijk nutteloos.
 def update_fanspeed():
     global fanspeed
     print(f"fanspeed: {fanspeed}")
@@ -139,18 +123,13 @@ def auto_fan():
         text = file.read()
         file.close()
         secondline = text.split("\n")[1]
-        # print(secondline)
         temperatuurdata = secondline.split(" ")[9]
-        # print(temperatuurdata)
         temperatuur = float(temperatuurdata[2:])
-        # print(temperatuur)
         temp = round(temperatuur / 1000, 2)
         answer=DataRepository.insert_temp(temp)      
-        # socketio.emit('B2F_refresh', {'data': (f"{temp} °C")}, broadcast=True)
         print(f"{temp} °C")
 
         if mode_counter == 0:
-            print("auto mode is active")
             if temp >= temp_0 and temp < temp_1:
                 pwm_trans.ChangeDutyCycle(20)
                 if stat == 0:
@@ -323,7 +302,6 @@ def sound_detect():
             sound = value
             print(f"{sound} dB")
             answer=DataRepository.insert_sound(sound)
-            # socketio.emit('B2F_refresh', {'data_sound': (f"{sound} dB")}, broadcast=True)
             time.sleep(5)
 
 
@@ -399,22 +377,16 @@ def hallo():
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
-    # while True:
-    # status = DataRepository.read_latest_temp_data()
-    # emit('B2F_refresh', {'data': (f"{status} °C")}, broadcast=True)
-    # print(f"{status} test socket")
-    # time.sleep(5)
 
 @socketio.on('B2F_refresh')
-def temp_status():
+def data_status():
         status_celcius = DataRepository.read_latest_temp_data()
         status_decibel = DataRepository.read_latest_sound_data()
         socketio.emit('B2F_refresh', {'dataCelcius': status_celcius["waarde"], 'dataDecibel': status_decibel["waarde"]}, broadcast=True)
-        print(f"{status_celcius, status_decibel} test socket refresh")
+        print(f"data: {status_celcius, status_decibel}")
 
 @socketio.on('F2B_switch_fanmode')
 def switch_fanmode(data):
-    # manual_fan
     global mode_counter
     print(f"{data}")
     if data == True:
@@ -429,27 +401,6 @@ def switch_fanspeed(data):
     global fanspeed 
     fanspeed = int(data)
     update_fanspeed()
-
-
-# @app.route(endpoint + '/temp', methods=['GET'])
-# def get_temp():
-#     if request.method == 'GET':
-#         data = DataRepository.read_latest_temp_data()
-#         if data is not None:
-#             return jsonify(data=data), 200
-#         else:
-#             return jsonify(data="ERROR"), 404
-
-# @app.route(endpoint + '/sound', methods=['GET'])
-# def get_sound():
-#     if request.method == 'GET':
-#         data_sound = DataRepository.read_latest_sound_data()
-#         if data_sound is not None:
-#             return jsonify(data_sound=data_sound), 200
-#         else:
-#             return jsonify(data="ERROR"), 404
-
-
 
 
 
