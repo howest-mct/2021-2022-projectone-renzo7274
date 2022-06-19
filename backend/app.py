@@ -133,11 +133,14 @@ def auto_fan():
         text = file.read()
         file.close()
         secondline = text.split("\n")[1]
+        # print(secondline)
         temperatuurdata = secondline.split(" ")[9]
+        # print(temperatuurdata)
         temperatuur = float(temperatuurdata[2:])
+        # print(temperatuur)
         temp = round(temperatuur / 1000, 2)
         answer=DataRepository.insert_temp(temp)      
-        socketio.emit('B2F_refresh', {'data': (f"{temp} °C")}, broadcast=True)
+        # socketio.emit('B2F_refresh', {'data': (f"{temp} °C")}, broadcast=True)
         print(f"{temp} °C")
 
         if mode_counter == 0:
@@ -313,7 +316,7 @@ def sound_detect():
             sound = value
             print(f"{sound} dB")
             answer=DataRepository.insert_sound(sound)
-            socketio.emit('B2F_refresh', {'data_sound': (f"{sound} dB")}, broadcast=True)
+            # socketio.emit('B2F_refresh', {'data_sound': (f"{sound} dB")}, broadcast=True)
             time.sleep(5)
 
 
@@ -386,28 +389,53 @@ endpoint = "/api/v1"
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
-@app.route(endpoint + '/temp', methods=['GET'])
-def get_temp():
-    if request.method == 'GET':
-        data_temp = DataRepository.read_latest_temp_data()
-        if data_temp is not None:
-            return jsonify(data=data_temp), 200
-        else:
-            return jsonify(data="ERROR"), 404
-
-@app.route(endpoint + '/sound', methods=['GET'])
-def get_sound():
-    if request.method == 'GET':
-        data_sound = DataRepository.read_latest_sound_data()
-        if data_sound is not None:
-            return jsonify(data_sound=data_sound), 200
-        else:
-            return jsonify(data="ERROR"), 404
-
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
-    # # Send to the client!
+    # while True:
+    # status = DataRepository.read_latest_temp_data()
+    # emit('B2F_refresh', {'data': (f"{status} °C")}, broadcast=True)
+    # print(f"{status} test socket")
+    # time.sleep(5)
+
+@socketio.on('B2F_refresh')
+def temp_status():
+        status_celcius = DataRepository.read_latest_temp_data()
+        status_decibel = DataRepository.read_latest_sound_data()
+        socketio.emit('B2F_refresh', {'dataCelcius': status_celcius["waarde"], 'dataDecibel': status_decibel["waarde"]}, broadcast=True)
+        print(f"{status_celcius, status_decibel} test socket refresh")
+
+@socketio.on('F2B_switch_fanmode')
+
+def switch_fanmode(data):
+    # manual_fan
+     mode_counter
+    print(f"{data}")
+    if data == "true":
+        mode_counter = 0
+    else:
+        mode_counter = 1
+
+
+# @app.route(endpoint + '/temp', methods=['GET'])
+# def get_temp():
+#     if request.method == 'GET':
+#         data = DataRepository.read_latest_temp_data()
+#         if data is not None:
+#             return jsonify(data=data), 200
+#         else:
+#             return jsonify(data="ERROR"), 404
+
+# @app.route(endpoint + '/sound', methods=['GET'])
+# def get_sound():
+#     if request.method == 'GET':
+#         data_sound = DataRepository.read_latest_sound_data()
+#         if data_sound is not None:
+#             return jsonify(data_sound=data_sound), 200
+#         else:
+#             return jsonify(data="ERROR"), 404
+
+
 
 
 
