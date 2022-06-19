@@ -51,6 +51,21 @@ const listenToUI = function () {
       // document.querySelector(`.js-room[data-idlamp="${id}"]`).classList.add("c-room--wait");
       socket.emit("F2B_switch_fanmode",  this.checked );
     });
+    const slider = document.getElementById("scrollbar");
+    slider.addEventListener("change", function () {
+      console.log("changed", this.value);
+      // const id = this.dataset.idlamp;
+      // let nieuweStatus;
+      // if (this.dataset.statuslamp == 0) {
+      //   nieuweStatus = 1;
+      // } else {
+      //   nieuweStatus = 0;
+      // }
+      // //const statusOmgekeerd = !status;
+      // clearClassList(document.querySelector(`.js-room[data-idlamp="${id}"]`));
+      // document.querySelector(`.js-room[data-idlamp="${id}"]`).classList.add("c-room--wait");
+      socket.emit("F2B_switch_fanspeed",  this.value );
+    });
 };
 
 const init = function () {

@@ -19,7 +19,7 @@ from selenium.webdriver.chrome.options import Options
 
 GPIO.setmode(GPIO.BCM)
 global mode_counter
-mode_counter = 0
+mode_counter = 1
 
 #######     fan control code    #######
 
@@ -37,6 +37,7 @@ sw_pin = 27
 clkLastState = 0
 switchState = 0
 # counter = 0
+global fanspeed 
 fanspeed = 0
 
 def setup_encoder():
@@ -48,6 +49,7 @@ def setup_encoder():
   GPIO.add_event_detect(clk_pin, GPIO.BOTH, callback=manual_fan, bouncetime=200)
 
 def manual_fan(clk_pin):
+    print( "in manuel fan")
     if mode_counter == 1:
         # global counter
         global fanspeed
@@ -77,39 +79,43 @@ def manual_fan(clk_pin):
                 print(fanspeed)
                 answer=DataRepository.insert_fanspeed(fanspeed)
             clockState=clkLastState
-                
+            update_fanspeed()
+
             # opslaan database draaiknop waarde eigenlijk nutteloos.
-            if fanspeed == 1:
-                pwm_trans.ChangeDutyCycle(20)                
+def update_fanspeed():
+    global fanspeed
+    print(f"fanspeed: {fanspeed}")
+    if fanspeed == 1:
+        pwm_trans.ChangeDutyCycle(20)                
 
-            elif fanspeed == 2:
-                pwm_trans.ChangeDutyCycle(30)                
+    elif fanspeed == 2:
+        pwm_trans.ChangeDutyCycle(30)                
 
-            elif fanspeed == 3:
-                pwm_trans.ChangeDutyCycle(40)                
+    elif fanspeed == 3:
+        pwm_trans.ChangeDutyCycle(40)                
 
-            elif fanspeed == 4:
-                pwm_trans.ChangeDutyCycle(50)                
+    elif fanspeed == 4:
+        pwm_trans.ChangeDutyCycle(50)                
 
-            elif fanspeed == 5:
-                pwm_trans.ChangeDutyCycle(60)               
+    elif fanspeed == 5:
+        pwm_trans.ChangeDutyCycle(60)               
 
-            elif fanspeed == 6:
-                pwm_trans.ChangeDutyCycle(70)                
+    elif fanspeed == 6:
+        pwm_trans.ChangeDutyCycle(70)                
 
-            elif fanspeed == 7:
-                pwm_trans.ChangeDutyCycle(80)               
+    elif fanspeed == 7:
+        pwm_trans.ChangeDutyCycle(80)               
 
-            elif fanspeed == 8:
-                pwm_trans.ChangeDutyCycle(90)               
+    elif fanspeed == 8:
+        pwm_trans.ChangeDutyCycle(90)               
 
-            elif fanspeed == 9:
-                pwm_trans.ChangeDutyCycle(95)                
+    elif fanspeed == 9:
+        pwm_trans.ChangeDutyCycle(95)                
 
-            elif fanspeed == 10:
-                pwm_trans.ChangeDutyCycle(100)                
-            else:
-                pwm_trans.ChangeDutyCycle(0)
+    elif fanspeed == 10:
+        pwm_trans.ChangeDutyCycle(100)                
+    else:
+        pwm_trans.ChangeDutyCycle(0)
                            
 
 
@@ -144,6 +150,7 @@ def auto_fan():
         print(f"{temp} °C")
 
         if mode_counter == 0:
+            print("auto mode is active")
             if temp >= temp_0 and temp < temp_1:
                 pwm_trans.ChangeDutyCycle(20)
                 if stat == 0:
@@ -406,15 +413,22 @@ def temp_status():
         print(f"{status_celcius, status_decibel} test socket refresh")
 
 @socketio.on('F2B_switch_fanmode')
-
 def switch_fanmode(data):
     # manual_fan
-     mode_counter
+    global mode_counter
     print(f"{data}")
-    if data == "true":
+    if data == True:
         mode_counter = 0
-    else:
+    elif data == False:
         mode_counter = 1
+    print(f"{mode_counter}")
+
+@socketio.on('F2B_switch_fanspeed')
+def switch_fanspeed(data):
+    print(f"{data}")
+    global fanspeed 
+    fanspeed = int(data)
+    update_fanspeed()
 
 
 # @app.route(endpoint + '/temp', methods=['GET'])
