@@ -1,40 +1,46 @@
 'use strict';
 
+// kijkt naar url website en is nodig om data te tonen zonder ethernet kabel
 const lanIP = `${window.location.hostname}:5000`;
 console.log(lanIP);
 const socket = io(`http://${lanIP}`);
 
-const showTemp = function (jsonObject) {
-  console.log(jsonObject.data.waarde)
-  document.querySelector('.js-temp').innerHTML = jsonObject.data.waarde
-}
 
-const showTempSocket = function (jsonObject) {
-  document.querySelector('.js-temp').innerHTML = jsonObject.data
-}
-
-const getTemp = function(){
-  const url = `http://192.168.168.169:5000/api/v1/temp`
-  handleData(url, showTemp)
+const showDataSocket = function (jsonObject) {
+  document.querySelector('.js-temp').innerHTML = jsonObject.dataCelcius
+  document.querySelector('.js-decibel').innerHTML = jsonObject.dataDecibel
 }
 
 const listenToUI = function () {
+  console.log("listening to UI");
+  const knop = document.getElementById("auto_control");
+    knop.addEventListener("click", function () {
+      console.log("clicked", this.checked);
+      socket.emit("F2B_switch_fanmode",  this.checked );
+    });
+    const slider = document.getElementById("scrollbar");
+    slider.addEventListener("change", function () {
+      console.log("changed", this.value);
+      socket.emit("F2B_switch_fanspeed",  this.value );
+    });
 };
 
 const init = function () {
-  console.log('hehe');
   listenToUI();
   listenToSocket();
-  getTemp();
 }
 
 const listenToSocket = function () {
-  socket.on("connected", function () {
+  socket.on("connect", function () {
     console.log("verbonden met socket webserver");
+    socket.emit("B2F_refresh")
   });
   socket.on("B2F_refresh", function(jsonObject) {
-    console.log(jsonObject)
-    showTempSocket(jsonObject)
+    console.log("incoming data", jsonObject);
+    showDataSocket(jsonObject);
+    setTimeout(function(){
+    socket.emit("B2F_refresh")
+    }, 5000)
   })
 }
 

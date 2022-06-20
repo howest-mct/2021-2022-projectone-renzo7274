@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>hoofd pagina</title>
   <link rel="stylesheet" href="https://use.typekit.net/tdw8pdf.css">
@@ -18,11 +18,17 @@
 <body>
   <section class="o-row o-container">
     <div class="c-link-cta o-container">
-      <h2 class="js-temp">
-        temp
+      <h2>
+          <span class="js-temp">
+            temp
+          </span>
+          °C
       </h2>
-      <h3 class="js-decibel">
-        decibel
+      <h3>
+        <span class="js-decibel">
+          decibel
+        </span>
+        dB
       </h3>
     </div>
   </section>
@@ -36,7 +42,7 @@
         </h4>
       <h4>
         manual control <br>
-        <input type="range" name="scrollbar" min="0" max="10" step="1" class="js-scrollbar" />
+        <input type="range" name="scrollbar" min="0" max="10" step="1" value=""class="js-scrollbar" id="scrollbar" />
       </h4>
       <h4>
         noise gate <br>

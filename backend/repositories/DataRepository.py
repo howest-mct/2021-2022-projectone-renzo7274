@@ -12,14 +12,50 @@ class DataRepository:
 
     @staticmethod
     def read_latest_temp_data():
-        sql = "SELECT waarde FROM database_test.historiek where DeviceID = 2 order by Actiedatum DESC limit 1"
+        sql = "SELECT waarde FROM database_final.historiek where DeviceID = 1 order by Actiedatum DESC limit 1"
         return Database.get_one_row(sql)
 
     @staticmethod
     def insert_temp(temp):
-        sql = "insert into historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'graden celcius',2,1)"
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'graden celcius',1,1)"
         params=[temp]
         return Database.execute_sql(sql,params)
 
+    @staticmethod
+    def read_latest_sound_data():
+        sql = "SELECT waarde FROM database_final.historiek where DeviceID = 2 order by Actiedatum DESC limit 1"
+        return Database.get_one_row(sql)
     
+    @staticmethod
+    def insert_sound(sound):
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'decibel',2,2)"
+        params=[sound]
+        return Database.execute_sql(sql,params)
 
+    @staticmethod
+    def read_latest_fans_data():
+        sql = "SELECT waarde FROM database_final.historiek where DeviceID = 4 order by Actiedatum DESC limit 1"
+        return Database.get_one_row(sql)
+
+    @staticmethod
+    def insert_fanspeed(fanspeed):
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'fan snelheid',4,4)"
+        params=[fanspeed]
+        return Database.execute_sql(sql,params)
+
+    @staticmethod
+    def read_latest_mbtn_data():
+        sql = "SELECT waarde FROM database_final.historiek where DeviceID = 7 order by Actiedatum DESC limit 1"
+        return Database.get_one_row(sql)
+
+    @staticmethod
+    def insert_mbtn(mode_counter):
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'knop voor rotary encoder of temp sensor',7,5)"
+        params=[mode_counter]
+        return Database.execute_sql(sql,params)
+    
+    @staticmethod
+    def insert_pbtn(status_pbtn):
+        sql = "insert into database_final.historiek( actiedatum,waarde,commentaar,deviceid,actieid) values( now(),%s,'power knop',6,5)"
+        params=[status_pbtn]
+        return Database.execute_sql(sql,params)

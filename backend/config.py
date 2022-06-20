@@ -3,7 +3,7 @@ user = student
 host = 127.0.0.1
 port = 3306
 password = W8w00rd
-database = database_test
+database = database_final
 
 [application_config]
 driver = 'SQL Server'
