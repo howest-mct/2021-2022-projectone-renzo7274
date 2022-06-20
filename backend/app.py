@@ -271,6 +271,7 @@ def init_LCD():
     send_instruction(0b00000001)  # clear display/cursor home of 0x01
 
 def write_lcd():
+    time.sleep(10)
     ips = check_output(['hostname', '--all-ip-addresses'])
     ips = ips.decode('utf-8')
     ips = ips.split()
@@ -317,7 +318,7 @@ def setup_gpio_pbtn():
 def lees_knop_power(ppin):
     print("**** power button pressed ****")
     answer=DataRepository.insert_pbtn(1)
-    os.system("sudo poweroff")
+    # os.system("sudo poweroff")
 
 setup_gpio_pbtn()
 
