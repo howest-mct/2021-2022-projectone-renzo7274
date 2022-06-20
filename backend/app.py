@@ -206,7 +206,7 @@ def auto_fan():
                     answer=DataRepository.insert_fanspeed(fanspeed)
                     stat = 1
 
-        time.sleep(5)
+        time.sleep(2)
 
 
 #######     lcd code    #######
@@ -277,7 +277,7 @@ def write_lcd():
     ip = ips[1]
     #print(f"IP: {ip}")
     write_message(f"IP: {ip}")
-    time.sleep(5)
+    time.sleep(2)
 
 
 #######     sound sensor code    #######
@@ -302,7 +302,7 @@ def sound_detect():
             sound = value
             print(f"{sound} dB")
             answer=DataRepository.insert_sound(sound)
-            time.sleep(5)
+            time.sleep(3)
 
 
 #######     powerbtn code    #######
@@ -317,7 +317,7 @@ def setup_gpio_pbtn():
 def lees_knop_power(ppin):
     print("**** power button pressed ****")
     answer=DataRepository.insert_pbtn(1)
-    # os.system("sudo poweroff")
+    os.system("sudo poweroff")
 
 setup_gpio_pbtn()
 
@@ -426,7 +426,7 @@ def start_thread_sound():
     print("**** Calling THREAD sound ****")
     thread2 = threading.Thread(target=sound_detect, args=(), daemon=True)
     thread2.start()
-    time.sleep(1)
+    time.sleep(1.5)
 
 def start_thread_pbtn():
     print("**** Calling THREAD pbtn ****")
@@ -438,7 +438,7 @@ def start_thread_mbtn():
     print("**** Calling THREAD mbtn ****")
     thread4 = threading.Thread(target=lees_knop_mode, args=(), daemon=True)
     thread4.start()
-    time.sleep(0.2)
+    time.sleep(0.3)
 
 
 def start_threads():
